@@ -17,7 +17,7 @@ const LandingPage = ({ navigation }) => {
   const buttons = [
     { title: 'LEARNING WITH NUMBERS', navigateTo: 'Learning', imageSource: require('../assets/Images/path-to-learning.png') },
     { title: 'SCAN WITH NUMBERS AI TOOL', navigateTo: 'Scan', imageSource: require('../assets/Images/path-to-scan.png') },
-    { title: 'FORMULAS SHEET', navigateTo: 'Formulas', imageSource: require('../assets/Images/path-to-formula.png') },
+    { title: 'FORMULAS SHEET', navigateTo: 'FormulaHome', imageSource: require('../assets/Images/path-to-formula.png') },
   ];
 
   return (
@@ -60,6 +60,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: containerPadding,
     backgroundColor: 'white',
+    marginTop: 20,
+
   },
   button: {
     justifyContent: 'flex-end',

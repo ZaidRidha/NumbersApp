@@ -1,11 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-// Import your screen components
+// Import your screen components and any additional components for the header
 import LandingPage from './screens/LandingPage.js';
-import HomePage from './screens/HomePage.js';
-
-
+import FormulaHome from './screens/FormulaHome.js';
+// Import a custom header component, or define it here
+import CustomHeader from './components/CustomHeader.js';
 
 const Stack = createStackNavigator();
 
@@ -13,8 +13,23 @@ function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LandingPage">
-        <Stack.Screen name="LandingPage" component={LandingPage} />
-        <Stack.Screen name="HomePage" component={HomePage} />
+        <Stack.Screen 
+          name="LandingPage" 
+          component={LandingPage}
+          options={({ navigation }) => ({ // Use a function to get access to navigation
+            header: () => <CustomHeader navigation={navigation} />, // Pass navigation prop to CustomHeader
+            cardStyle: { backgroundColor: 'white' },
+          })}
+        />
+        <Stack.Screen 
+          name="FormulaHome" 
+          component={FormulaHome}
+          options={({ navigation }) => ({ // Use a function to get access to navigation
+            header: () => <CustomHeader navigation={navigation} />, // Pass navigation prop to CustomHeader
+            cardStyle: { backgroundColor: 'white' },
+          })}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
