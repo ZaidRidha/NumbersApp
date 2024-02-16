@@ -14,23 +14,14 @@ To get a local copy up and running, follow these simple steps.
 ### Prerequisites
 Ensure you have npm installed by running `npm install npm@latest -g` in your terminal.
 
-### Installation
+### Installation & Running
 1. Clone the repo: `git clone https://github.com/your_username_/Project-Name.git`
 2. Navigate to the project directory
 3. Install NPM packages: `npm install`
-4. Start the application: `npm start`
-
-## Running the App
-- **For iOS**: Run `npx react-native run-ios` in your terminal from the project directory.
-- **For Android**:
-  - Ensure you have an Android emulator running or an Android device connected.
-  - Run `npx react-native run-android` in your terminal.
+4. Start the application: `npx expo start`
 
 ## Contributing
 We welcome contributions to make this project even better. If you have a suggestion that would make this app more user-friendly or efficient, please fork the repo and create a pull request. You can also open an issue with the tag "enhancement". Don't forget to give the project a star! Thanks again!
-
-## Support
-For any additional questions or comments, please email us at support@numberslearningapp.com.
 
 ## License
 Distributed under the MIT License. See LICENSE for more information.
