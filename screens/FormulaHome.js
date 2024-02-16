@@ -1,15 +1,48 @@
 // FormulaHome.js
-import React from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, SafeAreaView } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Make sure to install this package
+import React from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  SafeAreaView,
+} from "react-native";
+import { Icon } from "react-native-elements";
 
 const categories = [
-  { key: 'Mathematics', icon: 'calculator', bgColor: '#D1E3C8' },
-  { key: 'Physics', icon: 'atom', bgColor: '#C8E3DD' },
-  { key: 'Chemistry', icon: 'flask', bgColor: '#E3C8C8' },
-  { key: 'Statistics', icon: 'bar-chart', bgColor: '#D1C8E3' },
-  { key: 'Biology', icon: 'leaf', bgColor: '#E1E3C8' },
-  { key: 'AP Microeconomics', icon: 'university', bgColor: '#EACEAD' },
+  {
+    key: "Mathematics",
+    icon: "calculator",
+    type: "font-awesome",
+    bgColor: "#D1E3C8",
+  },
+  { key: "Physics", icon: "atom", type: "fontisto", bgColor: "#C8E3DD" },
+  {
+    key: "Chemistry",
+    icon: "flask",
+    type: "material-community",
+    bgColor: "#E3C8C8",
+  },
+  {
+    key: "Statistics",
+    icon: "bar-chart",
+    type: "font-awesome",
+    bgColor: "#D1C8E3",
+  },
+  {
+    key: "Biology",
+    icon: "leaf",
+    type: "material-community",
+    bgColor: "#E1E3C8",
+  },
+  {
+    key: "AP Microeconomics",
+    icon: "university",
+    type: "font-awesome",
+    bgColor: "#EACEAD",
+  },
 ];
 
 const FormulaHome = () => {
@@ -22,14 +55,20 @@ const FormulaHome = () => {
           style={styles.searchBar}
           placeholder="Search Formula"
           placeholderTextColor="black"
-    
         />
       </View>
       <FlatList
         data={categories}
         renderItem={({ item }) => (
-          <TouchableOpacity style={[styles.categoryBox, {backgroundColor: item.bgColor}]}>
-            <Icon name={item.icon} size={24} style={styles.categoryIcon} />
+          <TouchableOpacity
+            style={[styles.categoryBox, { backgroundColor: item.bgColor }]}
+          >
+            <Icon
+              name={item.icon}
+              type={item.type}
+              size={24}
+              style={styles.categoryIcon}
+            />
             <Text style={styles.categoryText}>{item.key}</Text>
           </TouchableOpacity>
         )}
@@ -42,19 +81,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: 'white',
-    marginTop:20,
+    backgroundColor: "white",
+    marginTop: 10,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   searchSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#d3d3d3',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#d3d3d3",
     borderRadius: 10,
     marginBottom: 16,
     paddingHorizontal: 10,
@@ -68,8 +107,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   categoryBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 20,
     borderRadius: 10,
     marginBottom: 10,
@@ -80,7 +119,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
