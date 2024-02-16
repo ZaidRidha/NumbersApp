@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet,TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Make sure to pass the navigation prop to CustomHeader
 const CustomHeader = ({ navigation }) => {
@@ -19,8 +20,9 @@ const CustomHeader = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    height: 60, // Adjust the height as needed
-    paddingHorizontal: 20, // Add some padding if needed
+    marginTop:10,
+    height: 70, // Adjust the height as needed
+    paddingHorizontal: 10, // Add some padding if needed
     flexDirection: 'row', // Align children in a row
     alignItems: 'center', // Center items vertically
     width: '100%', // Header should span the full width
