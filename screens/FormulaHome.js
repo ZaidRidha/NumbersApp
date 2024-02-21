@@ -1,5 +1,5 @@
 // FormulaHome.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   FlatList,
   Image,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon, SearchBar } from "react-native-elements"; // Import SearchBar her
 
 const detailedCategories = {
   Mathematics: {
@@ -269,6 +269,68 @@ const detailedCategories = {
 const FormulaHome = () => {
   const [currentCategory, setCurrentCategory] = useState(null);
   const [currentSubCategory, setCurrentSubCategory] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [searchResults, setSearchResults] = useState([]);
+  const searchBarRef = useRef(null);
+
+  const updateSearch = (query) => {
+    setSearchQuery(query);
+
+    if (query) {
+      const results = performSearch(query);
+      setSearchResults(results);
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const performSearch = (query) => {
+    const normalizedQuery = query.toLowerCase();
+
+    let searchResults = [];
+
+    Object.keys(detailedCategories).forEach((category) => {
+      const categoryData = detailedCategories[category];
+      const isCategoryMatch = category.toLowerCase().includes(normalizedQuery);
+
+      if (isCategoryMatch) {
+        searchResults.push({ key: category, ...categoryData });
+        return;
+      }
+
+      Object.keys(categoryData.subCategories || {}).forEach((subCategory) => {
+        const subCategoryData = categoryData.subCategories[subCategory];
+        const isSubCategoryMatch = subCategory
+          .toLowerCase()
+          .includes(normalizedQuery);
+
+        if (isSubCategoryMatch) {
+          searchResults.push({
+            key: subCategory,
+            parentKey: category,
+            ...subCategoryData,
+          });
+          return;
+        }
+
+        subCategoryData.subSubCategories.forEach((subSubCategory) => {
+          const isSubSubCategoryMatch = subSubCategory
+            .toLowerCase()
+            .includes(normalizedQuery);
+          if (isSubSubCategoryMatch) {
+            searchResults.push({
+              key: subSubCategory,
+              parentKey: category,
+              subParentKey: subCategory,
+              imagePath: subCategoryData.imagePath,
+            });
+          }
+        });
+      });
+    });
+
+    return searchResults;
+  };
 
   const handleCategoryPress = (category) => {
     setCurrentCategory(category);
@@ -283,56 +345,95 @@ const FormulaHome = () => {
     let data = [];
     let renderItem = ({ item }) => <View />;
 
-    if (currentSubCategory) {
-      const subCategoryDetails =
-        detailedCategories[currentCategory].subCategories[currentSubCategory];
-      data = subCategoryDetails.subSubCategories.map((subSubCategory) => ({
-        key: subSubCategory,
-        name: subSubCategory,
-        imagePath: subCategoryDetails.imagePath,
-      }));
+    // Check if there is an active search query and search results
+    if (searchQuery && searchResults.length > 0) {
+      data = searchResults;
       renderItem = ({ item }) => (
         <TouchableOpacity
-          style={[styles.subCategoryBox, { backgroundColor: "#D1E3C8" }]}
+          style={[styles.subCategoryBox, { backgroundColor: "#EFEFEF" }]}
+          onPress={() => {
+            // Clear the search query
+            setSearchQuery("");
+            if (searchBarRef.current) {
+              searchBarRef.current.clear();
+            }
+            
+
+            // Logic to handle item press based on its type
+            if (item.subParentKey) {
+              // Handle sub-sub-category selection
+              // Note: Implement your logic here, for now, just an example log
+              console.log("Selected sub-sub-category:", item.key);
+              // You might want to set currentCategory and currentSubCategory here as well
+            } else if (item.parentKey) {
+              // It's a sub-category, set the category and sub-category
+              setCurrentCategory(item.parentKey); // Set parent category
+              handleSubCategoryPress(item.key);
+            } else {
+              // It's a top-level category
+              handleCategoryPress(item.key);
+            }
+          }}
         >
-          <Image source={item.imagePath} style={styles.subCategoryImage} />
-          <Text style={styles.subCategoryText}>{item.name}</Text>
-        </TouchableOpacity>
-      );
-    } else if (currentCategory) {
-      const subCategories = detailedCategories[currentCategory].subCategories;
-      data = Object.keys(subCategories).map((key) => ({
-        key,
-        ...subCategories[key],
-      }));
-      renderItem = ({ item }) => (
-        <TouchableOpacity
-          style={[styles.subCategoryBox, { backgroundColor: "#D1E3C8" }]}
-          onPress={() => handleSubCategoryPress(item.key)}
-        >
-          <Image source={item.imagePath} style={styles.subCategoryImage} />
           <Text style={styles.subCategoryText}>{item.key}</Text>
         </TouchableOpacity>
       );
-    } else {
-      data = Object.keys(detailedCategories).map((key) => ({
-        key,
-        ...detailedCategories[key],
-      }));
-      renderItem = ({ item }) => (
-        <TouchableOpacity
-          style={[styles.categoryBox, { backgroundColor: item.bgColor }]}
-          onPress={() => handleCategoryPress(item.key)}
-        >
-          <Icon
-            name={item.icon}
-            type={item.type}
-            size={24}
-            style={styles.categoryIcon}
-          />
-          <Text style={styles.categoryText}>{item.key}</Text>
-        </TouchableOpacity>
-      );
+    } else if (!searchQuery) {
+      // If there's no search query, show the default categories or sub-categories
+      if (currentSubCategory) {
+        // Logic for displaying sub-categories
+        const subCategoryDetails =
+          detailedCategories[currentCategory].subCategories[currentSubCategory];
+        data = subCategoryDetails.subSubCategories.map((subSubCategory) => ({
+          key: subSubCategory,
+          name: subSubCategory,
+          imagePath: subCategoryDetails.imagePath,
+        }));
+        renderItem = ({ item }) => (
+          <TouchableOpacity
+            style={[styles.subCategoryBox, { backgroundColor: "#D1E3C8" }]}
+          >
+            <Image source={item.imagePath} style={styles.subCategoryImage} />
+            <Text style={styles.subCategoryText}>{item.name}</Text>
+          </TouchableOpacity>
+        );
+      } else if (currentCategory) {
+        // Logic for displaying selected category's sub-categories
+        const subCategories = detailedCategories[currentCategory].subCategories;
+        data = Object.keys(subCategories).map((key) => ({
+          key,
+          ...subCategories[key],
+        }));
+        renderItem = ({ item }) => (
+          <TouchableOpacity
+            style={[styles.subCategoryBox, { backgroundColor: "#D1E3C8" }]}
+            onPress={() => handleSubCategoryPress(item.key)}
+          >
+            <Image source={item.imagePath} style={styles.subCategoryImage} />
+            <Text style={styles.subCategoryText}>{item.key}</Text>
+          </TouchableOpacity>
+        );
+      } else {
+        // Logic for displaying all categories
+        data = Object.keys(detailedCategories).map((key) => ({
+          key,
+          ...detailedCategories[key],
+        }));
+        renderItem = ({ item }) => (
+          <TouchableOpacity
+            style={[styles.categoryBox, { backgroundColor: item.bgColor }]}
+            onPress={() => handleCategoryPress(item.key)}
+          >
+            <Icon
+              name={item.icon}
+              type={item.type}
+              size={24}
+              style={styles.categoryIcon}
+            />
+            <Text style={styles.categoryText}>{item.key}</Text>
+          </TouchableOpacity>
+        );
+      }
     }
 
     return (
@@ -347,6 +448,17 @@ const FormulaHome = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>FORMULA SHEET</Text>
+      <SearchBar
+        placeholder="Search Here..."
+        onChangeText={updateSearch}
+        value={searchQuery}
+        lightTheme // Use lightTheme or remove this prop for default theme
+        round // Optional: for rounded search bar
+        containerStyle={styles.searchBarContainer}
+        inputContainerStyle={styles.searchBarInputContainer}
+        inputStyle={styles.searchBarInput}
+        ref={searchBarRef} // Attach the ref to the SearchBar
+      />
       {renderContent()}
     </View>
   );
@@ -372,13 +484,17 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 10,
   },
-  searchBar: {
-    flex: 1,
-    fontSize: 18,
-    padding: 10,
+  searchBarContainer: {
+    backgroundColor: "white", // Match the background color or make it transparent
+    borderBottomColor: "transparent",
+    borderTopColor: "transparent",
+    marginBottom: 10,
   },
-  searchIcon: {
-    marginRight: 10,
+  searchBarInputContainer: {
+    backgroundColor: "#EFEFEF", // Light grey or any color you prefer
+  },
+  searchBarInput: {
+    color: "black", // Adjust text color as needed
   },
   categoryBox: {
     flexDirection: "row",
