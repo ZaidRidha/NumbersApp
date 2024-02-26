@@ -63,7 +63,7 @@ const LandingPage = ({ navigation }) => {
       {/* Learning Button */}
       <ButtonComponent
         title="LEARNING WITH NUMBERS"
-        navigateTo="Learning"
+        navigateTo="NumbersHome"
         imageSource={require("../assets/Images/path-to-learning-3.png")}
         navigation={navigation}
         buttonStyle={styles.learningButton}
