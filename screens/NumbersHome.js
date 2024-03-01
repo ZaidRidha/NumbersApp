@@ -66,9 +66,9 @@ const NumbersHome = ({ navigation }) => {
             navigateTo="DetailScreen"
             navigation={navigation}
             buttonStyle={{
-              button: { width: "45%", backgroundColor: "#D7CADD" }, // Adjust width to make it smaller
+              button: { width: "45%", height: 150, backgroundColor: "#D7CADD" }, // Adjust width to make it smaller
               text: { color: "black" },
-              image: { width: 200, height: 120, marginTop: 50 }, // Adjust image size here
+              image: { width: 100, height: 100, marginTop: 50, marginLeft: 55 }, // Adjust image size here
             }}
           />
 
@@ -78,7 +78,7 @@ const NumbersHome = ({ navigation }) => {
             navigateTo="AnotherScreen"
             navigation={navigation}
             buttonStyle={{
-              button: { width: "45%", backgroundColor: "#CDD7FF" }, // Adjust width to make it smaller
+              button: { width: "45%", height: 150, backgroundColor: "#CDD7FF" }, // Adjust width to make it smaller
               text: { color: "black" },
             }}
           />
@@ -90,7 +90,7 @@ const NumbersHome = ({ navigation }) => {
             navigateTo="Past Papers"
             navigation={navigation}
             buttonStyle={{
-              button: { width: "45%", backgroundColor: "#B7E5DD" }, // Adjust width to make it smaller
+              button: { width: "45%", height: 150, backgroundColor: "#B7E5DD" }, // Adjust width to make it smaller
               text: { color: "black" },
             }}
           />
@@ -101,7 +101,7 @@ const NumbersHome = ({ navigation }) => {
             navigateTo="AnotherScreen"
             navigation={navigation}
             buttonStyle={{
-              button: { width: "45%", backgroundColor: "#F1F0C0" }, // Adjust width to make it smaller
+              button: { width: "45%", height: 150, backgroundColor: "#F1F0C0" }, // Adjust width to make it smaller
               text: { color: "black" },
             }}
           />
@@ -113,7 +113,7 @@ const NumbersHome = ({ navigation }) => {
           subtitle="Challenge yourself with quick Quiz"
           onPress={() => console.log("Button pressed")} // Replace with your navigation logic
         />
-                <CustomButton
+        <CustomButton
           imageSource={QuickOpenImage}
           title="Quizzes AP Calculus AB"
           subtitle="Challenge yourself with quick Quiz"
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    padding: 5,
   },
   title: {
     fontSize: 20,
@@ -181,10 +182,11 @@ const styles = StyleSheet.create({
   },
 
   customButtonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F1F0C0',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F1F0C0",
     padding: 10,
+  
     borderRadius: 10,
     margin: 10,
   },
@@ -192,13 +194,15 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginRight: 10,
+    resizeMode: "contain",
   },
   customButtonTextContainer: {
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   customButtonTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    marginBottom: 5,
   },
   customButtonSubtitle: {
     fontSize: 14,
