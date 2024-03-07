@@ -5,36 +5,38 @@ import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 const ApCurriculum = () => {
-  const [selectedSubject, setSelectedSubject] = useState("AP Calculus AB");
+  const [activeTab, setActiveTab] = useState("Mathematics");
 
-  const data = [
-    { label: "Item 1", value: "1" },
-    { label: "Item 2", value: "2" },
-    { label: "Item 3", value: "3" },
-    { label: "Item 4", value: "4" },
-    { label: "Item 5", value: "5" },
-    { label: "Item 6", value: "6" },
-    { label: "Item 7", value: "7" },
-    { label: "Item 8", value: "8" },
-  ];
-
-  const [value, setValue] = useState(null);
-
-  const renderItem = (item) => {
-    return (
-      <View style={styles.item}>
-        <Text style={styles.textItem}>{item.label}</Text>
-        {item.value === value && (
-          <AntDesign
-            style={styles.icon}
-            color="black"
-            name="Safety"
-            size={20}
-          />
-        )}
-      </View>
-    );
+  // Data for different subjects
+  const subjectData = {
+    Mathematics: [
+      { label: "AP Calculus AB", value: "AP Calculus AB" },
+      { label: "AP Calculus BC", value: "AP Calculus BC" },
+      { label: "AP Precalculus", value: "AP Precalculus" },
+      // ... other Mathematics subjects
+    ],
+    Physics: [
+      // ... Physics subjects
+    ],
+    Biology: [
+      // ... Biology subjects
+    ],
+    Chemistry: [
+      // ... Chemistry subjects
+    ],
   };
+
+  // State to manage the selected value of the dropdown
+  const [selectedValue, setSelectedValue] = useState(null);
+
+  const renderItem = (item) => (
+    <View style={styles.item}>
+      <Text style={styles.textItem}>{item.label}</Text>
+      {item.value === selectedValue && (
+        <AntDesign style={styles.icon} color="black" name="check" size={20} />
+      )}
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -48,36 +50,38 @@ const ApCurriculum = () => {
 
       <View style={styles.tabContainer}>
         {/* Tabs for each subject */}
-        <TouchableOpacity style={styles.tab}>
-          <Text>Mathematics</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tab}>
-          <Text>Physics</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tab}>
-          <Text>Biology</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tab}>
-          <Text>Chemistry</Text>
-        </TouchableOpacity>
+        {Object.keys(subjectData).map((subject) => (
+          <TouchableOpacity
+            key={subject}
+            style={[styles.tab, activeTab === subject && styles.activeTab]}
+            onPress={() => {
+              setActiveTab(subject);
+              setSelectedValue(null); // Reset the dropdown when changing tabs
+            }}
+          >
+            <Text>{subject}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
+      {/* Conditional rendering of dropdown based on active tab */}
       <Dropdown
         style={styles.dropdown}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
-        data={data}
+        data={subjectData[activeTab]} // Data changes based on active tab
         maxHeight={300}
         labelField="label"
         valueField="value"
         placeholder="Select item"
         searchPlaceholder="Search..."
-        value={value}
+        value={selectedValue}
         onChange={(item) => {
-          setValue(item.value);
+          setSelectedValue(item.value);
         }}
         renderItem={renderItem}
+        containerStyle={styles.dropdownContainerStyle}
       />
 
       {/* You would add additional pickers or lists for each tab as needed */}
@@ -116,6 +120,10 @@ const styles = StyleSheet.create({
     // Styles for your dropdown container
     paddingHorizontal: 10,
     paddingVertical: 5,
+  },
+  dropdownContainerStyle: {
+    backgroundColor: "#D7CADD", // The desired color for the dropdown container
+    // Add other styling as needed
   },
   dropdown: {
     // Styles for your dropdown
