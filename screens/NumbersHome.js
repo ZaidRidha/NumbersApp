@@ -6,6 +6,7 @@ import {
   Image,
   Text,
   ScrollView,
+  TouchableOpacity
 } from "react-native";
 import CarouselImage1 from "../assets/Images/APMathsCarousel2.png";
 import CarouselImage2 from "../assets/Images/APBiology2.png";
@@ -21,21 +22,42 @@ import ButtonComponent from "../components/ButtonComponent";
 const NumbersHome = ({ navigation }) => {
   // Data for the carousel
   const carouselData = [
-    { id: "1", image: CarouselImage1, title: "AP Mathematics (AP)" },
-    { id: "2", image: CarouselImage2, title: "AP Biology (AP)" },
-    { id: "3", image: CarouselImage3, title: "IB Physics (IB)" },
+    {
+      id: "1",
+      image: CarouselImage1,
+      title: "AP Mathematics (AP)",
+      navigateTo: "ApCurriculum",
+    },
+    {
+      id: "2",
+      image: CarouselImage2,
+      title: "AP Biology (AP)",
+      navigateTo: "SomeOtherScreen",
+    },
+    {
+      id: "3",
+      image: CarouselImage3,
+      title: "IB Physics (IB)",
+      navigateTo: "AnotherScreen",
+    },
   ];
 
   // Render function for carousel item
   const renderCarouselItem = ({ item }) => (
-    <View style={styles.card}>
+    <TouchableOpacity
+      onPress={() => {
+        if (item.navigateTo) {
+          navigation.navigate(item.navigateTo); // Use the navigateTo property for navigation
+        }
+      }}
+      style={styles.card}
+    >
       <Image source={item.image} style={styles.carouselImage} />
       <View style={styles.textBackground}>
         <Text style={styles.imageText}>{item.title}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
-
   const CustomButton = ({ imageSource, title, subtitle, onPress }) => (
     <View style={styles.customButtonContainer}>
       <Image source={imageSource} style={styles.customButtonImage} />
@@ -186,7 +208,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F1F0C0",
     padding: 10,
-  
+
     borderRadius: 10,
     margin: 10,
   },
