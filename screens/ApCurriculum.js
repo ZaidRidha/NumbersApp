@@ -1,18 +1,63 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Picker } from "@react-native-picker/picker"; // You might need to install @react-native-picker/picker
-import { Dropdown } from "react-native-element-dropdown";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+
+import { Icon } from "react-native-elements";
+
+const ExpandableButton = ({ subject, onPress }) => (
+  <TouchableOpacity style={styles.expandableButton} onPress={onPress}>
+    <Text style={styles.expandableButtonText}>{subject}</Text>
+    <Icon name="down" type="antdesign" color="#000" />
+  </TouchableOpacity>
+);
+const SubjectDetails = ({ visible, details }) => {
+  if (!visible) return null;
+
+  return (
+    <View style={styles.detailsContainer}>
+      {details.items.map((item) => (
+        <Text key={item} style={styles.itemText}>
+          {item}
+        </Text>
+      ))}
+    </View>
+  );
+};
 
 const ApCurriculum = () => {
   const [activeTab, setActiveTab] = useState("Mathematics");
 
+  const [expandedSubjects, setExpandedSubjects] = useState({});
+
+  const toggleSubject = (subject) => {
+    setExpandedSubjects((prevExpanded) => ({
+      ...prevExpanded,
+      [subject]: !prevExpanded[subject],
+    }));
+  };
+
   // Data for different subjects
   const subjectData = {
     Mathematics: [
-      { label: "AP Calculus AB", value: "AP Calculus AB" },
-      { label: "AP Calculus BC", value: "AP Calculus BC" },
-      { label: "AP Precalculus", value: "AP Precalculus" },
+      {
+        subject: "AP Calculus AB",
+        items: ["Key Concept", "Past Paper", "Question Bank", "Quiz"],
+      },
+      {
+        subject: "AP Calculus BC",
+        items: ["Key Concept", "Past Paper", "Question Bank", "Quiz"],
+      },
+
+      {
+        subject: "AP Precalculus",
+        items: ["Key Concept", "Past Paper", "Question Bank", "Quiz"],
+      },
+
       // ... other Mathematics subjects
     ],
     Physics: [
@@ -26,20 +71,8 @@ const ApCurriculum = () => {
     ],
   };
 
-  // State to manage the selected value of the dropdown
-  const [selectedValue, setSelectedValue] = useState(null);
-
-  const renderItem = (item) => (
-    <View style={styles.item}>
-      <Text style={styles.textItem}>{item.label}</Text>
-      {item.value === selectedValue && (
-        <AntDesign style={styles.icon} color="black" name="check" size={20} />
-      )}
-    </View>
-  );
-
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.header}>Advanced Placement® (AP)</Text>
       <Text style={styles.description}>
         AP gives students the chance to tackle college-level work while they're
@@ -49,43 +82,37 @@ const ApCurriculum = () => {
       </Text>
 
       <View style={styles.tabContainer}>
-        {/* Tabs for each subject */}
         {Object.keys(subjectData).map((subject) => (
-          <TouchableOpacity
-            key={subject}
-            style={[styles.tab, activeTab === subject && styles.activeTab]}
-            onPress={() => {
-              setActiveTab(subject);
-              setSelectedValue(null); // Reset the dropdown when changing tabs
-            }}
-          >
-            <Text>{subject}</Text>
+          <TouchableOpacity key={subject} onPress={() => setActiveTab(subject)}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === subject
+                  ? styles.activeTabText
+                  : styles.inactiveTabText,
+              ]}
+            >
+              {subject}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* Conditional rendering of dropdown based on active tab */}
-      <Dropdown
-        style={styles.dropdown}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        data={subjectData[activeTab]} // Data changes based on active tab
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder="Select item"
-        searchPlaceholder="Search..."
-        value={selectedValue}
-        onChange={(item) => {
-          setSelectedValue(item.value);
-        }}
-        renderItem={renderItem}
-        containerStyle={styles.dropdownContainerStyle}
-      />
-
-      {/* You would add additional pickers or lists for each tab as needed */}
-    </View>
+      <View>
+        {subjectData[activeTab]?.map((subjectDetail) => (
+          <View key={subjectDetail.subject} style={styles.subjectContainer}>
+            <ExpandableButton
+              subject={subjectDetail.subject}
+              onPress={() => toggleSubject(subjectDetail.subject)}
+            />
+            <SubjectDetails
+              visible={expandedSubjects[subjectDetail.subject]}
+              details={subjectDetail}
+            />
+          </View>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -109,72 +136,54 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginBottom: 20,
+    marginBottom: 10,
   },
-  tab: {
+  tabText: {
+    textDecorationLine: "underline",
+    textDecorationColor: "#008000", // Green underline
     padding: 10,
-    backgroundColor: "#e1e1e1", // Placeholder color, adjust as needed
+    fontSize: 15,
+  },
+  activeTabText: {
+    color: "grey", // Gray font for the active tab
+    textDecorationColor: "gray", // Green underline
+  },
+  inactiveTabText: {
+    color: "#008000", // Green font for inactive tabs
   },
 
-  dropdownContainer: {
-    // Styles for your dropdown container
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+  expandableButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    paddingHorizontal: 10, // Maintain horizontal padding
+    marginBottom:10,
   },
-  dropdownContainerStyle: {
-    backgroundColor: "#D7CADD", // The desired color for the dropdown container
-    // Add other styling as needed
-  },
-  dropdown: {
-    // Styles for your dropdown
-    height: 50,
-    borderColor: "gray",
-    borderWidth: 0.5,
-    borderRadius: 8,
-    paddingHorizontal: 8,
+  subjectContainer: {
+    marginTop: 10,
+    backgroundColor: "#D7CADD", // Adjust the background color as needed
+    borderRadius: 10, // Adjust the border radius as needed
+    overflow: "hidden", // Ensures the child components don't overlap the container's border
   },
 
-  dropdown: {
-    margin: 16,
-    height: 60, // Increased height for a 'fatter' dropdown
-    backgroundColor: "#D7CADD", // Updated background color
-    borderRadius: 12,
-    padding: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
-  },
-  icon: {
-    marginRight: 5,
-  },
-  item: {
-    padding: 17,
+  // Modify expandableButton and detailsContainer styles to remove borderRadius
+  expandableButton: {
     flexDirection: "row",
     justifyContent: "space-between",
+    padding: 10, // Reduced padding for tighter spacing
+    backgroundColor: "#D7CADD",
     alignItems: "center",
+    marginTop: 10,
+    borderRadius: 5,
   },
-  textItem: {
-    flex: 1,
-    fontSize: 16,
+  detailsContainer: {
+    backgroundColor: "#D7CADD",
+    paddingTop: 5, // Reduced padding for tighter spacing at the top
+    paddingBottom: 20, // Adjust as needed for padding at the bottom
+    paddingHorizontal: 20, // Maintain horizontal padding
   },
-  placeholderStyle: {
-    fontSize: 16,
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-  },
-  iconStyle: {
-    width: 20,
-    height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
+  itemText: {
+    fontSize: 18,
+    paddingBottom: 35, // Reduced marginBottom for tighter item spacing
   },
 
   // Add additional styling here as needed
