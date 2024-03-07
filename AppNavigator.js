@@ -7,6 +7,7 @@ import FormulaHome from "./screens/FormulaHome.js";
 // Import a custom header component, or define it here
 import CustomHeader from "./components/CustomHeader.js";
 import NumbersHome from "./screens/NumbersHome.js";
+import ApCurriculum from "./screens/ApCurriculum.js";
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,15 @@ function AppNavigator() {
         <Stack.Screen
           name="NumbersHome"
           component={NumbersHome}
+          options={({ navigation }) => ({
+            header: () => <CustomHeader navigation={navigation} />,
+            cardStyle: { backgroundColor: "white" },
+          })}
+        />
+
+        <Stack.Screen
+          name="ApCurriculum"
+          component={ApCurriculum}
           options={({ navigation }) => ({
             header: () => <CustomHeader navigation={navigation} />,
             cardStyle: { backgroundColor: "white" },
