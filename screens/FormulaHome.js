@@ -332,6 +332,15 @@ const FormulaHome = () => {
     return searchResults;
   };
 
+  const resetToOriginalSheet = () => {
+    setCurrentCategory(null);
+    setCurrentSubCategory(null);
+    setSearchQuery("");
+    if (searchBarRef.current) {
+      searchBarRef.current.clear();
+    }
+  };
+
   const handleCategoryPress = (category) => {
     setCurrentCategory(category);
     setCurrentSubCategory(null); // Reset sub-category selection
@@ -447,7 +456,9 @@ const FormulaHome = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>FORMULA SHEET</Text>
+            <TouchableOpacity onPress={resetToOriginalSheet}>
+        <Text style={styles.title}>FORMULA SHEET</Text>
+      </TouchableOpacity>
       <SearchBar
         placeholder="Search Here..."
         onChangeText={updateSearch}
