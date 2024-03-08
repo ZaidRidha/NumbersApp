@@ -33,9 +33,9 @@ const CustomHeader = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    marginTop: 10,
-    height: 70, // Adjust the height as needed
-    paddingHorizontal: 10, // Add some padding if needed
+
+    height: 100, // Adjust the height as needed
+
     flexDirection: "row", // Align children in a row
     alignItems: "center", // Center items vertically
     width: "100%", // Header should span the full width
