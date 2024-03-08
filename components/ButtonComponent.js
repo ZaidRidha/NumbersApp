@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   image: {
-    width: "100%",
-    height: "100%",
+    width: "95%",
+    height: "95%",
     position: "absolute",
     right: 0,
     bottom: 0,
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     left: 10,
-    width: "70%",
+    width: "100%",
     textAlign: "left",
   },
   tabletText: {

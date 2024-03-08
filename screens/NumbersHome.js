@@ -12,7 +12,7 @@ import CarouselImage1 from "../assets/Images/APMathsCarousel2.png";
 import CarouselImage2 from "../assets/Images/APBiology2.png";
 import CarouselImage3 from "../assets/Images/APPhysics2.png";
 import ButtonImage1 from "../assets/Images/KeyConceptsImg.png";
-import ButtonImage2 from "../assets/Images/PastPapersImage.png"; // Assuming you have another image for the second button
+import ButtonImage2 from "../assets/Images/QuestionBankImage.png"; // Assuming you have another image for the second button
 import ButtonImage3 from "../assets/Images/PastPapersImage.png"; // Assuming you have another image for the second button
 import ButtonImage4 from "../assets/Images/QuizzesImage.png"; // Assuming you have another image for the second button
 import QuickOpenImage from "../assets/Images/QuickOpenImage.png";
@@ -114,6 +114,7 @@ const NumbersHome = ({ navigation }) => {
             buttonStyle={{
               button: { width: "45%", height: 150, backgroundColor: "#B7E5DD" }, // Adjust width to make it smaller
               text: { color: "black" },
+                            
             }}
           />
 
