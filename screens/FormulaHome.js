@@ -1,5 +1,5 @@
 // FormulaHome.js
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -8,270 +8,26 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  Dimensions,
 } from "react-native";
 import { Icon, SearchBar } from "react-native-elements"; // Import SearchBar her
 
-const detailedCategories = {
-  Mathematics: {
-    icon: "calculator",
-    type: "font-awesome",
-    bgColor: "#D1E3C8",
-    subCategories: {
-      Algebra: {
-        imagePath: require("../assets/Images/algebra-icon.png"),
-        subSubCategories: [
-          "Properties of Exponents",
-          "Radical Properties",
-          "Operations with polynomials",
-          "Product Formulas",
-          "Factoring Formulas",
-          "Binomial theorem",
-          "Operations with algebraic fractions",
-          "Linear equations",
-          "Properties of inequality",
-          "General formula",
-          "Properties of logarithms",
-          "Summation theorems",
-          "Taylor and Maclaurin Series",
-          "Summary of series criteria",
-          "Properties of complex numbers",
-          "Modulus & argument of a complex number",
-          "Conjugate of a complex number",
-          "Representations of a complex number",
-          "Complex number operations",
-          "De Moivre’s formula",
-        ],
-      },
-      Geometry: {
-        imagePath: require("../assets/Images/geo-icon.png"),
-        subSubCategories: [
-          "Angles in a polygon",
-          "Quadrilateral area & perimeter",
-          "Area & perimeter of triangles",
-          "Area & perimeter of the circle",
-          "Volume of geometric bodies",
-          "Equation of the line",
-          "Distance between two points",
-          "Distance from a point to a line",
-          "Midpoint between two points",
-          "Circumference",
-          "Parabola with vertex at the origin",
-          "Parabola with vertex different from the origin",
-          "Ellipse with center at the origin",
-          "Ellipse with different center of origin",
-          "Hyperbola",
-        ],
-      },
-      Trigonometry: {
-        imagePath: require("../assets/Images/trig-icon.png"),
-        subSubCategories: [
-          "Trigonometric functions of common angles",
-          "Law of sines & law of cosines",
-          "Fundamental trigonometric identities",
-          "Trigonometric identities of addition & subtraction of angles",
-          "Double & half angle trigonometric identities",
-          "Trigonometric identities of sum to product & product to sum",
-          "Other trigonometric identities",
-          "Sine & cosine values",
-          "Surface of a triangle & a spherical polygon",
-          "Spherical trigonometry: law of sines",
-          "Spherical trigonometry: Cosine rule for sides",
-          "Spherical trigonometry: Cosine rule for angles",
-          "Spherical trigonometry: Cotangent theorem",
-          "Spherical trigonometry: Half - angle",
-          "Delambre - Gauss Analogies",
-          "Napier’s analogies",
-        ],
-      },
-      "Differential Calculus": {
-        imagePath: require("../assets/Images/diff-icon.png"),
-        subSubCategories: [
-          "Properties of limits",
-          "Properties of trigonometric limits",
-          "Basic derivative rules",
-          "Derivatives of logarithmic functions",
-          "Derivatives of exponential functions",
-          "Derivatives of trigonometric functions",
-          "Derivatives of inverse trigonometric functions",
-          "Derivatives of hyperbolic functions",
-          "Derivatives of inverse hyperbolic functions",
-          "Criterion of the first & second derivative",
-        ],
-      },
-      "Integral Calculus": {
-        imagePath: require("../assets/Images/integ-icon.png"),
-        subSubCategories: [
-          "Basic integration rules",
-          "Change of variables",
-          "Integrals of hyperbolic functions",
-          "Integrals that result in inverse trigonometric functions",
-          "Fundamental theorem of calculus",
-          "Integration of parts",
-          "Integration by trigonometric substitution",
-          "Integration by partial fractions",
-          "Integrals of trigonometric functions",
-        ],
-      },
-      "Multivariable Calculus": {
-        imagePath: require("../assets/Images/multi-icon.png"),
-        subSubCategories: [
-          "Limit, derivative & integral of a vector function",
-          "Properties of limits of functions of several variables",
-          "Derivative of vector function",
-          "Arc length",
-          "Areas under the curve",
-          "Area of a surface of revolution",
-          "Partial derivatives",
-          "Directional Derivatives, gradient of a function and total differential",
-          "Differential operators",
-          "Vector identities",
-          "Fubini’s theorem",
-          "Variable change",
-          "Integral in cylindrical coordinates",
-          "Line integrals",
-          "Integral theorems",
-        ],
-      },
-      "Probability and Statistics": {
-        imagePath: require("../assets/Images/prob-icon.png"),
-        subSubCategories: [
-          "Measures of central tendency for ungrouped data",
-          "Measures of dispersion for ungrouped data",
-          "Measures of position for ungrouped data",
-          "Measures of central tendency for grouped data",
-          "Quantile calculation for grouped data",
-          "Statistical moments",
-          "Geometric mean",
-          "Probability",
-          "Combinations and permutations",
-          "Binomial distribution",
-          "Poisson distribution",
-          "Geometric distribution",
-          "Hypergeometric distribution",
-          "Normal distribution",
-          "Exponential distribution",
-          "Student’s distribution",
-          "Inferential statistics",
-          "Confidence intervals",
-          "Sample Size",
-        ],
-      },
-      "Linear Algebra": {
-        imagePath: require("../assets/Images/lin-icon.png"),
-        subSubCategories: [
-          "Properties of matrix",
-          "Identity matrix",
-          "Triangular matrix",
-          "Symmetric matrix",
-          "Transpose of a matrix",
-          "Adjoint matrix",
-          "Inverse matrix",
-          "Orthogonal matrix",
-          "Addition & subtraction of matrices",
-          "Matrix multiplication",
-          "Determinants",
-          "Cramer’s Rule",
-          "Sarrus Rule",
-          "Vectors & their magnitude",
-          "Operations with vectors & their properties",
-          "Unit vector",
-          "Midpoint between two points in space",
-          "Angle Between vectors",
-          "Dot product & its properties",
-          "Vector projections",
-          "Cross product & its properties",
-          "Vector normalization",
-        ],
-      },
-      "Differential Equations": {
-        imagePath: require("../assets/Images/diff-icon.png"),
-        subSubCategories: [
-          "Properties of the constant of integration",
-          "Separable differential equation",
-          "Homogeneous differential equation",
-          "Differential equations with coefficients of parallel lines",
-          "Differential equations with coefficients of non-parallel lines",
-          "Exact Differential equations",
-          "First order linear differential equation",
-          "Higher order linear differential equations",
-          "Differential equations with constant coefficients",
-        ],
-      },
-      "Fourier Series": {
-        imagePath: require("../assets/Images/four-icon.png"),
-        subSubCategories: [
-          "Fourier series",
-          "Even symmetry",
-          "Odd symmetry",
-          "Half-wave symmetry",
-          "Even Quarter wave symmetry",
-          "Odd Quarter wave symmetry",
-          "Unit Impulse function",
-          "Heaviside step function",
-          "Complex form of Fourier series",
-          "Fourier transform",
-          "Fourier sine & cosine transform",
-          "Convolution",
-          "Fourier transform table 1",
-          "Fourier transform table 2",
-          "Laplace transform",
-          "Laplace transform table 1",
-          "Laplace transform table 2",
-        ],
-      },
-      "Discrete Mathematics": {
-        imagePath: require("../assets/Images/disc-icon.png"),
-        subSubCategories: [
-          "Logical connectors",
-          "Conjunction",
-          "Disjunction",
-          "Negation",
-          "Conditional",
-          "Biconditional",
-          "Laws of propositional logic",
-          "Laws of set theory",
-          "Laws of Boolean Algebra",
-        ],
-      },
-      "Beta and Gamma Functions": {
-        imagePath: require("../assets/Images/b-icon.png"),
-        subSubCategories: [], // Add subSubCategories here
-      },
-      "Z Transform": {
-        imagePath: require("../assets/Images/z-icon.png"),
-        subSubCategories: [], // Add subSubCategories here
-      },
-    },
-  },
-  Physics: { icon: "atom", type: "fontisto", bgColor: "#C8E3DD" },
-  Chemistry: {
-    icon: "flask",
-    type: "material-community",
-    bgColor: "#E3C8C8",
-  },
-  Statistics: {
-    icon: "bar-chart",
-    type: "font-awesome",
-    bgColor: "#D1C8E3",
-  },
-  Biology: {
-    icon: "leaf",
-    type: "material-community",
-    bgColor: "#E1E3C8",
-  },
-  "AP Microeconomics": {
-    icon: "university",
-    type: "font-awesome",
-    bgColor: "#EACEAD",
-  },
-};
-
 const FormulaHome = () => {
-  const [currentCategory, setCurrentCategory] = useState(null);
-  const [currentSubCategory, setCurrentSubCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
-  const [searchResults, setSearchResults] = useState([]);
+
+  const [displayedContent, setDisplayedContent] = useState([]);
   const searchBarRef = useRef(null);
+  const [currentLevel, setCurrentLevel] = useState("subjects"); // 'subjects', 'subtopics', 'details'
+  const screenWidth = Dimensions.get("window").width;
+  const formulaImageWidth = screenWidth * 0.9;
+  const formulaImageHeight = formulaImageWidth * (3 / 4); // maintain 4:3 aspect ratio
+
+  const extractImageUrl = (htmlString) => {
+    const regex = /<img.*?src="([^"]*)"/;
+    const match = regex.exec(htmlString);
+    console.log("Extracted URL: ", match ? match[1] : "No match"); // Add for debugging
+    return match ? match[1] : null;
+  };
 
   const updateSearch = (query) => {
     setSearchQuery(query);
@@ -284,52 +40,96 @@ const FormulaHome = () => {
     }
   };
 
-  const performSearch = (query) => {
-    const normalizedQuery = query.toLowerCase();
-
-    let searchResults = [];
-
-    Object.keys(detailedCategories).forEach((category) => {
-      const categoryData = detailedCategories[category];
-      const isCategoryMatch = category.toLowerCase().includes(normalizedQuery);
-
-      if (isCategoryMatch) {
-        searchResults.push({ key: category, ...categoryData });
-        return;
-      }
-
-      Object.keys(categoryData.subCategories || {}).forEach((subCategory) => {
-        const subCategoryData = categoryData.subCategories[subCategory];
-        const isSubCategoryMatch = subCategory
-          .toLowerCase()
-          .includes(normalizedQuery);
-
-        if (isSubCategoryMatch) {
-          searchResults.push({
-            key: subCategory,
-            parentKey: category,
-            ...subCategoryData,
-          });
-          return;
-        }
-
-        subCategoryData.subSubCategories.forEach((subSubCategory) => {
-          const isSubSubCategoryMatch = subSubCategory
-            .toLowerCase()
-            .includes(normalizedQuery);
-          if (isSubSubCategoryMatch) {
-            searchResults.push({
-              key: subSubCategory,
-              parentKey: category,
-              subParentKey: subCategory,
-              imagePath: subCategoryData.imagePath,
-            });
-          }
-        });
-      });
+  useEffect(() => {
+    fetchSubjects().then((fetchedSubjects) => {
+      setDisplayedContent(fetchedSubjects); // Store the fetched subjects in state
     });
+  }, []);
 
-    return searchResults;
+  // Function to fetch subtopics for a given topic slug
+  const fetchSubjects = async () => {
+    try {
+      const response = await fetch(`https://num8ers.cloud/api/formulasubject`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const subjects = await response.json();
+      return subjects; // This will now contain all subjects data
+    } catch (error) {
+      console.error("There was an error fetching the subjects:", error);
+      return []; // Return an empty array or appropriate fallback
+    }
+  };
+
+  const fetchSubtopics = async (subjectName) => {
+    try {
+      const response = await fetch(
+        `https://num8ers.cloud/api/formulatopic/${subjectName}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const subtopics = await response.json();
+      return subtopics; // Make sure to return the fetched subtopics
+    } catch (error) {
+      console.error("There was an error fetching the subtopics:", error);
+      return []; // Return an empty array in case of error
+    }
+  };
+
+  const fetchSubtopicDetails = async (subtopicSlug) => {
+    try {
+      const response = await fetch(
+        `https://num8ers.cloud/api/formulasubtopic/${subtopicSlug}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const subtopicDetails = await response.json();
+      return subtopicDetails; // Return the fetched details
+    } catch (error) {
+      console.error("There was an error fetching the subtopic details:", error);
+      return []; // Return an empty array in case of error
+    }
+  };
+
+  const fetchFormulaSheets = async (subtopicDetailSlug) => {
+    try {
+      const url = `https://num8ers.cloud/api/formulaformula/${subtopicDetailSlug}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const formulaSheets = await response.json();
+      console.log(formulaSheets);
+      return formulaSheets; // Return the fetched formula sheets
+    } catch (error) {
+      console.error("There was an error fetching the formula sheets:", error);
+      return []; // Return an empty array in case of error
+    }
+  };
+
+  const handlePressOnSubjectOrSubtopic = async (identifier, level) => {
+    if (level === "subjects") {
+      // When a subject is selected, fetch its subtopics
+      const subtopics = await fetchSubtopics(identifier);
+      setDisplayedContent(subtopics || []);
+      setCurrentLevel("subtopics"); // Now displaying subtopics, so update the level
+    } else if (level === "subtopics") {
+      // When a subtopic is selected, fetch its details
+      const details = await fetchSubtopicDetails(identifier); // Assuming identifier is a slug for subtopics
+      setDisplayedContent(details || []);
+      setCurrentLevel("details"); // Now displaying details, so update the level
+    } else if (level === "details") {
+      // New block to fetch formula sheets when a detail is selected
+      const formulaSheets = await fetchFormulaSheets(identifier); // Passing the subtopic detail slug
+      setDisplayedContent(formulaSheets || []);
+      setCurrentLevel("formulas"); // Setting the level to 'formulas' to indicate we are now showing formula sheets
+    }
+  };
+
+  const performSearch = (query) => {
+    console.log("searching");
   };
 
   const resetToOriginalSheet = () => {
@@ -341,122 +141,9 @@ const FormulaHome = () => {
     }
   };
 
-  const handleCategoryPress = (category) => {
-    setCurrentCategory(category);
-    setCurrentSubCategory(null); // Reset sub-category selection
-  };
-
-  const handleSubCategoryPress = (subCategory) => {
-    setCurrentSubCategory(subCategory);
-  };
-
-  const renderContent = () => {
-    let data = [];
-    let renderItem = ({ item }) => <View />;
-
-    // Check if there is an active search query and search results
-    if (searchQuery && searchResults.length > 0) {
-      data = searchResults;
-      renderItem = ({ item }) => (
-        <TouchableOpacity
-          style={[styles.subCategoryBox, { backgroundColor: "#EFEFEF" }]}
-          onPress={() => {
-            // Clear the search query
-            setSearchQuery("");
-            if (searchBarRef.current) {
-              searchBarRef.current.clear();
-            }
-            
-
-            // Logic to handle item press based on its type
-            if (item.subParentKey) {
-              // Handle sub-sub-category selection
-              // Note: Implement your logic here, for now, just an example log
-              console.log("Selected sub-sub-category:", item.key);
-              // You might want to set currentCategory and currentSubCategory here as well
-            } else if (item.parentKey) {
-              // It's a sub-category, set the category and sub-category
-              setCurrentCategory(item.parentKey); // Set parent category
-              handleSubCategoryPress(item.key);
-            } else {
-              // It's a top-level category
-              handleCategoryPress(item.key);
-            }
-          }}
-        >
-          <Text style={styles.subCategoryText}>{item.key}</Text>
-        </TouchableOpacity>
-      );
-    } else if (!searchQuery) {
-      // If there's no search query, show the default categories or sub-categories
-      if (currentSubCategory) {
-        // Logic for displaying sub-categories
-        const subCategoryDetails =
-          detailedCategories[currentCategory].subCategories[currentSubCategory];
-        data = subCategoryDetails.subSubCategories.map((subSubCategory) => ({
-          key: subSubCategory,
-          name: subSubCategory,
-          imagePath: subCategoryDetails.imagePath,
-        }));
-        renderItem = ({ item }) => (
-          <TouchableOpacity
-            style={[styles.subCategoryBox, { backgroundColor: "#D1E3C8" }]}
-          >
-            <Image source={item.imagePath} style={styles.subCategoryImage} />
-            <Text style={styles.subCategoryText}>{item.name}</Text>
-          </TouchableOpacity>
-        );
-      } else if (currentCategory) {
-        // Logic for displaying selected category's sub-categories
-        const subCategories = detailedCategories[currentCategory].subCategories;
-        data = Object.keys(subCategories).map((key) => ({
-          key,
-          ...subCategories[key],
-        }));
-        renderItem = ({ item }) => (
-          <TouchableOpacity
-            style={[styles.subCategoryBox, { backgroundColor: "#D1E3C8" }]}
-            onPress={() => handleSubCategoryPress(item.key)}
-          >
-            <Image source={item.imagePath} style={styles.subCategoryImage} />
-            <Text style={styles.subCategoryText}>{item.key}</Text>
-          </TouchableOpacity>
-        );
-      } else {
-        // Logic for displaying all categories
-        data = Object.keys(detailedCategories).map((key) => ({
-          key,
-          ...detailedCategories[key],
-        }));
-        renderItem = ({ item }) => (
-          <TouchableOpacity
-            style={[styles.categoryBox, { backgroundColor: item.bgColor }]}
-            onPress={() => handleCategoryPress(item.key)}
-          >
-            <Icon
-              name={item.icon}
-              type={item.type}
-              size={24}
-              style={styles.categoryIcon}
-            />
-            <Text style={styles.categoryText}>{item.key}</Text>
-          </TouchableOpacity>
-        );
-      }
-    }
-
-    return (
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.key}
-      />
-    );
-  };
-
   return (
     <View style={styles.container}>
-            <TouchableOpacity onPress={resetToOriginalSheet}>
+      <TouchableOpacity onPress={resetToOriginalSheet}>
         <Text style={styles.title}>FORMULA SHEET</Text>
       </TouchableOpacity>
       <SearchBar
@@ -470,7 +157,51 @@ const FormulaHome = () => {
         inputStyle={styles.searchBarInput}
         ref={searchBarRef} // Attach the ref to the SearchBar
       />
-      {renderContent()}
+
+      <FlatList
+        data={displayedContent}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => {
+          // Check if the current level is 'formulas' to decide on rendering logic
+          if (currentLevel === "formulas") {
+            const imageUrl = extractImageUrl(item.description); // Extract the image URL
+            console.log(imageUrl);
+            if (imageUrl) {
+              return (
+                <View style={styles.formulaImageContainer}>
+                  <Image
+                    source={{ uri: imageUrl }}
+                    style={{
+                      width: formulaImageWidth,
+                      height: formulaImageHeight,
+                    }}
+                    resizeMode="contain"
+                  />
+                </View>
+              );
+            } else {
+              // In case no image URL could be extracted
+              return (
+                <View style={styles.formulaSheetBox}>
+                  <Text>No image found</Text>
+                </View>
+              );
+            }
+          } else {
+            // This handles subjects and subtopics as before
+            return (
+              <TouchableOpacity
+                style={styles.categoryBox}
+                onPress={() =>
+                  handlePressOnSubjectOrSubtopic(item.slug, currentLevel)
+                }
+              >
+                <Text style={styles.categoryText}>{item.name}</Text>
+              </TouchableOpacity>
+            );
+          }
+        }}
+      />
     </View>
   );
 };
@@ -480,6 +211,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "white",
+  },
+
+  formulaImageContainer: {
+    alignItems: 'center', // Center the image horizontally
+    justifyContent: 'center', // Center the image vertically (if you have flex:1)
+    marginVertical: 20, // Add some vertical margin
   },
   title: {
     fontSize: 24,
@@ -514,6 +251,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     elevation: 3,
+    backgroundColor: "#C8E3DD",
   },
   categoryIcon: {
     marginRight: 10,
