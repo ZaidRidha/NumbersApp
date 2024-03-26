@@ -153,23 +153,32 @@ const FormulaHome = () => {
     setNavigationHistory(history);
 
     if (previousState) {
-        setCurrentLevel(previousState.level);
-        setDisplayedContent(previousState.content);
+      setCurrentLevel(previousState.level);
+      setDisplayedContent(previousState.content);
     }
-};
+  };
 
   return (
     <View style={styles.container}>
-      {
-    navigationHistory.length > 0 && (
-        <TouchableOpacity onPress={handleBack}>
-            <Text>Back</Text>
-        </TouchableOpacity>
-    )
-}
-      <TouchableOpacity onPress={resetToOriginalSheet}>
+      <View style={styles.topSection}>
+        {navigationHistory.length > 0 ? (
+          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+            <Icon name="arrow-back" type="material" size={24} color="black" />
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.backButtonPlaceholder} />
+        )}
         <Text style={styles.title}>FORMULA SHEET</Text>
-      </TouchableOpacity>
+        {/* Adjust this spacer's style based on whether the back button is visible */}
+        <View
+          style={
+            navigationHistory.length > 0
+              ? styles.backButton
+              : styles.backButtonPlaceholder
+          }
+        />
+      </View>
+
       <SearchBar
         placeholder="Search Here..."
         onChangeText={updateSearch}
@@ -247,11 +256,25 @@ const styles = StyleSheet.create({
     justifyContent: "center", // Center the image vertically (if you have flex:1)
     marginVertical: 20, // Add some vertical margin
   },
+  topSection: {
+    flexDirection: "row", // Align children horizontally
+    alignItems: "center", // Center children vertically in the container
+    marginBottom: 16, // Add some space below the section
+    // Add padding or margin here if needed for general spacing
+  },
+  backButtonPlaceholder: {
+    width: 24, // Match the back button's width
+    opacity: 0, // Make it invisible
+  },
+  backButton: {
+    width: 24, // Explicitly define the back button's width for clarity and consistency
+    marginRight: 16, // If you have specific margin settings for the backButton, ensure it's considered
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 16,
-    textAlign: "center",
+    flex: 1,
+    textAlign: "center", // Center the text within the flex space
   },
   searchSection: {
     flexDirection: "row",
