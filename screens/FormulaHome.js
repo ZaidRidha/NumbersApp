@@ -21,6 +21,7 @@ const FormulaHome = () => {
   const screenWidth = Dimensions.get("window").width;
   const formulaImageWidth = screenWidth * 0.9;
   const formulaImageHeight = formulaImageWidth * (3 / 4); // maintain 4:3 aspect ratio
+  const [navigationHistory, setNavigationHistory] = useState([]);
 
   const extractImageUrl = (htmlString) => {
     const regex = /<img.*?src="([^"]*)"/;
@@ -110,6 +111,11 @@ const FormulaHome = () => {
   };
 
   const handlePressOnSubjectOrSubtopic = async (identifier, level) => {
+    setNavigationHistory([
+      ...navigationHistory,
+      { level: currentLevel, content: displayedContent },
+    ]);
+
     if (level === "subjects") {
       // When a subject is selected, fetch its subtopics
       const subtopics = await fetchSubtopics(identifier);
@@ -141,8 +147,26 @@ const FormulaHome = () => {
     }
   };
 
+  const handleBack = () => {
+    const history = [...navigationHistory];
+    const previousState = history.pop();
+    setNavigationHistory(history);
+
+    if (previousState) {
+        setCurrentLevel(previousState.level);
+        setDisplayedContent(previousState.content);
+    }
+};
+
   return (
     <View style={styles.container}>
+      {
+    navigationHistory.length > 0 && (
+        <TouchableOpacity onPress={handleBack}>
+            <Text>Back</Text>
+        </TouchableOpacity>
+    )
+}
       <TouchableOpacity onPress={resetToOriginalSheet}>
         <Text style={styles.title}>FORMULA SHEET</Text>
       </TouchableOpacity>
