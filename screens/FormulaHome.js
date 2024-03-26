@@ -25,7 +25,7 @@ const FormulaHome = () => {
   const extractImageUrl = (htmlString) => {
     const regex = /<img.*?src="([^"]*)"/;
     const match = regex.exec(htmlString);
-    console.log("Extracted URL: ", match ? match[1] : "No match"); // Add for debugging
+
     return match ? match[1] : null;
   };
 
@@ -101,7 +101,7 @@ const FormulaHome = () => {
         throw new Error("Network response was not ok");
       }
       const formulaSheets = await response.json();
-      console.log(formulaSheets);
+
       return formulaSheets; // Return the fetched formula sheets
     } catch (error) {
       console.error("There was an error fetching the formula sheets:", error);
@@ -196,6 +196,11 @@ const FormulaHome = () => {
                   handlePressOnSubjectOrSubtopic(item.slug, currentLevel)
                 }
               >
+                <Image
+                  source={{ uri: item.photo }}
+                  style={styles.categoryIcon}
+                  resizeMode="contain"
+                />
                 <Text style={styles.categoryText}>{item.name}</Text>
               </TouchableOpacity>
             );
@@ -214,8 +219,8 @@ const styles = StyleSheet.create({
   },
 
   formulaImageContainer: {
-    alignItems: 'center', // Center the image horizontally
-    justifyContent: 'center', // Center the image vertically (if you have flex:1)
+    alignItems: "center", // Center the image horizontally
+    justifyContent: "center", // Center the image vertically (if you have flex:1)
     marginVertical: 20, // Add some vertical margin
   },
   title: {
@@ -255,6 +260,8 @@ const styles = StyleSheet.create({
   },
   categoryIcon: {
     marginRight: 10,
+    width: 30,
+    height: 30,
   },
   categoryText: {
     fontSize: 18,
