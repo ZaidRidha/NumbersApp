@@ -8,6 +8,7 @@ import FormulaHome from "./screens/FormulaHome.js";
 import CustomHeader from "./components/CustomHeader.js";
 import NumbersHome from "./screens/NumbersHome.js";
 import ApCurriculum from "./screens/ApCurriculum.js";
+import MaximiseSheet from "./screens/MaximiseSheet.js";
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,8 @@ function AppNavigator() {
             cardStyle: { backgroundColor: "white" },
           })}
         />
+
+        <Stack.Screen name="MaximiseSheet" component={MaximiseSheet} />
       </Stack.Navigator>
     </NavigationContainer>
   );

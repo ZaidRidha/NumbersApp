@@ -19,8 +19,9 @@ const FormulaHome = () => {
   const searchBarRef = useRef(null);
   const [currentLevel, setCurrentLevel] = useState("subjects"); // 'subjects', 'subtopics', 'details'
   const screenWidth = Dimensions.get("window").width;
-  const formulaImageWidth = screenWidth * 0.9;
-  const formulaImageHeight = formulaImageWidth * (3 / 4); // maintain 4:3 aspect ratio
+  const screenHeight = Dimensions.get("window").height;
+  const formulaImageWidth = 500;
+  const formulaImageHeight = 500;
   const [navigationHistory, setNavigationHistory] = useState([]);
 
   const extractImageUrl = (htmlString) => {
@@ -253,8 +254,8 @@ const styles = StyleSheet.create({
 
   formulaImageContainer: {
     alignItems: "center", // Center the image horizontally
-    justifyContent: "center", // Center the image vertically (if you have flex:1)
     marginVertical: 20, // Add some vertical margin
+
   },
   topSection: {
     flexDirection: "row", // Align children horizontally
