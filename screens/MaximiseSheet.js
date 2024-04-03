@@ -1,14 +1,31 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { View, Image, StyleSheet, Dimensions } from 'react-native';
 
-const MaximiseSheet = () => {
+const MaximiseSheet = ({ route }) => {
+  const { imageUrl } = route.params; // Retrieve the imageUrl passed as a parameter
+  
   return (
-    <View>
-      <Text>MaximiseSheet</Text>
+    <View style={styles.container}>
+      <Image 
+        source={{ uri: imageUrl }} 
+        style={styles.image} 
+        resizeMode="contain"
+      />
     </View>
-  )
-}
+  );
+};
 
-export default MaximiseSheet
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000', // Optional: for better image contrast
+  },
+  image: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+});
 
-const styles = StyleSheet.create({})
+export default MaximiseSheet;

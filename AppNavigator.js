@@ -53,7 +53,21 @@ function AppNavigator() {
           })}
         />
 
-        <Stack.Screen name="MaximiseSheet" component={MaximiseSheet} />
+<Stack.Screen
+  name="MaximiseSheet"
+  component={MaximiseSheet}
+  options={{
+    headerBackTitle: " ", // This hides the back button text but keeps the arrow
+    title: "",
+    headerStyle: {
+      backgroundColor: '#000', // Set the header background color to black
+      shadowOpacity: 0, // Removes shadow on iOS
+      elevation: 0, // Removes shadow on Android
+      borderBottomWidth: 0, // Removes bottom border line on iOS
+    },
+    headerTintColor: '#fff', // Optional: Change the header text and icons to white for contrast
+  }}
+/>
       </Stack.Navigator>
     </NavigationContainer>
   );

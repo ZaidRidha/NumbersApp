@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from "react-native";
 import { Icon, SearchBar } from "react-native-elements"; // Import SearchBar her
-
+import { useNavigation } from '@react-navigation/native';
 const FormulaHome = () => {
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
@@ -23,7 +23,7 @@ const FormulaHome = () => {
   const formulaImageWidth = 500;
   const formulaImageHeight = 500;
   const [navigationHistory, setNavigationHistory] = useState([]);
-
+  const navigation = useNavigation();
   const extractImageUrl = (htmlString) => {
     const regex = /<img.*?src="([^"]*)"/;
     const match = regex.exec(htmlString);
@@ -202,7 +202,12 @@ const FormulaHome = () => {
             console.log(imageUrl);
             if (imageUrl) {
               return (
-                <View style={styles.formulaImageContainer}>
+                <TouchableOpacity
+                  style={styles.formulaImageContainer}
+                  onPress={() =>
+                    navigation.navigate("MaximiseSheet", { imageUrl: imageUrl })
+                  }
+                >
                   <Image
                     source={{ uri: imageUrl }}
                     style={{
@@ -211,7 +216,7 @@ const FormulaHome = () => {
                     }}
                     resizeMode="contain"
                   />
-                </View>
+                </TouchableOpacity>
               );
             } else {
               // In case no image URL could be extracted
@@ -255,7 +260,6 @@ const styles = StyleSheet.create({
   formulaImageContainer: {
     alignItems: "center", // Center the image horizontally
     marginVertical: 20, // Add some vertical margin
-
   },
   topSection: {
     flexDirection: "row", // Align children horizontally
