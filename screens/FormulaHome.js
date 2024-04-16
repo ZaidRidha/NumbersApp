@@ -20,6 +20,7 @@ const FormulaHome = () => {
   const [currentLevel, setCurrentLevel] = useState("subjects"); // 'subjects', 'subtopics', 'details'
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
+  const [selectedSubjectName, setSelectedSubjectName] = useState("Formulas"); // Default title
   const formulaImageWidth = 500;
   const formulaImageHeight = 500;
   const [navigationHistory, setNavigationHistory] = useState([]);
@@ -40,6 +41,10 @@ const FormulaHome = () => {
     } else {
       setSearchResults([]);
     }
+  };
+
+  const formatSubjectName = (name) => {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
   useEffect(() => {
@@ -122,8 +127,13 @@ const FormulaHome = () => {
       const subtopics = await fetchSubtopics(identifier);
       setDisplayedContent(subtopics || []);
       setCurrentLevel("subtopics"); // Now displaying subtopics, so update the level
+      console.log(identifier);
+      setSelectedSubjectName(identifier); // Update the title with the selected subject name
+      console.log(selectedSubjectName);
     } else if (level === "subtopics") {
       // When a subtopic is selected, fetch its details
+      console.log(identifier);
+      setSelectedSubjectName(identifier); // Update the title with the selected subject name
       const details = await fetchSubtopicDetails(identifier); // Assuming identifier is a slug for subtopics
       setDisplayedContent(details || []);
       setCurrentLevel("details"); // Now displaying details, so update the level
@@ -191,7 +201,13 @@ const FormulaHome = () => {
         inputStyle={styles.searchBarInput}
         ref={searchBarRef} // Attach the ref to the SearchBar
       />
+
       <View style={styles.flatlistContainer}>
+        {["subjects", "subtopics", "details"].includes(currentLevel) && (
+          <Text style={styles.sectionHeader}>
+            {formatSubjectName(selectedSubjectName)}
+          </Text>
+        )}
         <FlatList
           data={displayedContent}
           keyExtractor={(item) => item.id.toString()}
@@ -235,10 +251,6 @@ const FormulaHome = () => {
             } else {
               // This handles subjects and subtopics as before
 
-              const itemStyle =
-                currentLevel === "subjects"
-                  ? styles.subjectBox
-                  : styles.categoryBox;
               return (
                 <TouchableOpacity
                   style={
@@ -275,17 +287,11 @@ const FormulaHome = () => {
                       />
                     </>
                   )}
-                  {currentLevel !== "subjects" &&
-                    currentLevel !== "subtopics" && (
-                      <>
-                        <Image
-                          source={{ uri: item.photo }}
-                          style={styles.categoryIcon}
-                          resizeMode="contain"
-                        />
-                        <Text style={styles.categoryText}>{item.name}</Text>
-                      </>
-                    )}
+                  {currentLevel === "details" && (
+                    <>
+                      <Text style={styles.detailsText}>{item.name}</Text>
+                    </>
+                  )}
                 </TouchableOpacity>
               );
             }
@@ -381,17 +387,33 @@ const styles = StyleSheet.create({
 
   detailsBox: {
     flexDirection: "row",
-    alignItems: "center",
 
+    justifyContent: "center",
+    padding: 12, // Increased padding to give more space for text
+    margin: 8,
     borderRadius: 10,
-    marginBottom: 5, // Less space between boxes
-    elevation: 1, // Less elevation for a flatter look
-    backgroundColor: "#D1E3C8", // A lighter color for differentiation
-    width: `${100 / 3}%`, // Adjust based on numColumns to fit the grid
-    aspectRatio: 1, // Optional: makes each item square, adjust as needed
-    padding: 4, // Adjust padding to control spacing between items
+    elevation: 1,
+    backgroundColor: "#D1E3C8",
+    width: `${100 / 3 - 4}%`,
+    height: 150, // Adjust height if necessary
   },
 
+  detailsText: {
+    fontSize: 16,
+    fontWeight: "bold",
+
+    marginVertical: 4,
+  },
+
+  sectionHeader: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 25,
+
+    color: "white", // Adjust text color according to your theme
+  },
   horizontalList: {
     flexGrow: 0, // Prevents the FlatList from trying to fill the vertical space
   },
