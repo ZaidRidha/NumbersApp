@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from "react-native";
 import { Icon, SearchBar } from "react-native-elements"; // Import SearchBar her
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 const FormulaHome = () => {
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
@@ -191,61 +191,107 @@ const FormulaHome = () => {
         inputStyle={styles.searchBarInput}
         ref={searchBarRef} // Attach the ref to the SearchBar
       />
+      <View style={styles.flatlistContainer}>
+        <FlatList
+          data={displayedContent}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={currentLevel === "details" ? 3 : 1} // 3 columns for 'details' level, 1 column otherwise
+          key={currentLevel === "details" ? "threeColumns" : "oneColumn"} // Change the key to force re-render
+          horizontal={false} // Ensure vertical scrolling
+          style={currentLevel === "details" ? styles.gridList : {}}
+          renderItem={({ item }) => {
+            // Check if the current level is 'formulas' to decide on rendering logic
+            if (currentLevel === "formulas") {
+              const imageUrl = extractImageUrl(item.description); // Extract the image URL
+              console.log(imageUrl);
+              if (imageUrl) {
+                return (
+                  <TouchableOpacity
+                    style={styles.formulaImageContainer}
+                    onPress={() =>
+                      navigation.navigate("MaximiseSheet", {
+                        imageUrl: imageUrl,
+                      })
+                    }
+                  >
+                    <Image
+                      source={{ uri: imageUrl }}
+                      style={{
+                        width: formulaImageWidth,
+                        height: formulaImageHeight,
+                      }}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                );
+              } else {
+                // In case no image URL could be extracted
+                return (
+                  <View style={styles.formulaSheetBox}>
+                    <Text>No image found</Text>
+                  </View>
+                );
+              }
+            } else {
+              // This handles subjects and subtopics as before
 
-      <FlatList
-        data={displayedContent}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => {
-          // Check if the current level is 'formulas' to decide on rendering logic
-          if (currentLevel === "formulas") {
-            const imageUrl = extractImageUrl(item.description); // Extract the image URL
-            console.log(imageUrl);
-            if (imageUrl) {
+              const itemStyle =
+                currentLevel === "subjects"
+                  ? styles.subjectBox
+                  : styles.categoryBox;
               return (
                 <TouchableOpacity
-                  style={styles.formulaImageContainer}
+                  style={
+                    currentLevel === "subjects"
+                      ? styles.subjectBox
+                      : currentLevel === "subtopics"
+                      ? styles.subjectBox // Assuming you want the same style for subjects and subtopics
+                      : currentLevel === "details"
+                      ? styles.detailsBox // Smaller style for details level
+                      : styles.categoryBox // Default or fallback style
+                  }
                   onPress={() =>
-                    navigation.navigate("MaximiseSheet", { imageUrl: imageUrl })
+                    handlePressOnSubjectOrSubtopic(item.slug, currentLevel)
                   }
                 >
-                  <Image
-                    source={{ uri: imageUrl }}
-                    style={{
-                      width: formulaImageWidth,
-                      height: formulaImageHeight,
-                    }}
-                    resizeMode="contain"
-                  />
+                  {currentLevel === "subjects" && (
+                    <>
+                      <Text style={styles.subjectText}>{item.name}</Text>
+                      <Image
+                        source={{ uri: item.photo }}
+                        style={styles.subjectImage} // Use the absolute positioning style here
+                        resizeMode="contain"
+                      />
+                    </>
+                  )}
+
+                  {currentLevel === "subtopics" && (
+                    <>
+                      <Text style={styles.subtopicText}>{item.name}</Text>
+                      <Image
+                        source={{ uri: item.photo }}
+                        style={styles.subtopicImage} // Use the absolute positioning style here
+                        resizeMode="contain"
+                      />
+                    </>
+                  )}
+                  {currentLevel !== "subjects" &&
+                    currentLevel !== "subtopics" && (
+                      <>
+                        <Image
+                          source={{ uri: item.photo }}
+                          style={styles.categoryIcon}
+                          resizeMode="contain"
+                        />
+                        <Text style={styles.categoryText}>{item.name}</Text>
+                      </>
+                    )}
                 </TouchableOpacity>
               );
-            } else {
-              // In case no image URL could be extracted
-              return (
-                <View style={styles.formulaSheetBox}>
-                  <Text>No image found</Text>
-                </View>
-              );
             }
-          } else {
-            // This handles subjects and subtopics as before
-            return (
-              <TouchableOpacity
-                style={styles.categoryBox}
-                onPress={() =>
-                  handlePressOnSubjectOrSubtopic(item.slug, currentLevel)
-                }
-              >
-                <Image
-                  source={{ uri: item.photo }}
-                  style={styles.categoryIcon}
-                  resizeMode="contain"
-                />
-                <Text style={styles.categoryText}>{item.name}</Text>
-              </TouchableOpacity>
-            );
-          }
-        }}
-      />
+          }}
+        />
+      </View>
     </View>
   );
 };
@@ -255,6 +301,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "white",
+  },
+
+  flatlistContainer: {
+    padding: 16,
+    backgroundColor: "#4F4F4F",
+    borderRadius: 10,
   },
 
   formulaImageContainer: {
@@ -294,9 +346,12 @@ const styles = StyleSheet.create({
     borderBottomColor: "transparent",
     borderTopColor: "transparent",
     marginBottom: 10,
+    backgroundColor: "#4F4F4F",
+    borderRadius: 20,
   },
   searchBarInputContainer: {
-    backgroundColor: "#EFEFEF", // Light grey or any color you prefer
+    backgroundColor: "#4F4F4F",
+    height: 30, // Smaller height for the input field
   },
   searchBarInput: {
     color: "black", // Adjust text color as needed
@@ -310,6 +365,37 @@ const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: "#C8E3DD",
   },
+
+  subjectBox: {
+    flexDirection: "column", // Stack items vertically
+    justifyContent: "flex-start", // Align items to the start vertically
+    alignItems: "flex-start", // Align items to the start horizontally
+    paddingVertical: 80,
+
+    borderRadius: 10,
+    marginBottom: 10,
+    elevation: 3,
+    backgroundColor: "#D1E3C8",
+    position: "relative",
+  },
+
+  detailsBox: {
+    flexDirection: "row",
+    alignItems: "center",
+
+    borderRadius: 10,
+    marginBottom: 5, // Less space between boxes
+    elevation: 1, // Less elevation for a flatter look
+    backgroundColor: "#D1E3C8", // A lighter color for differentiation
+    width: `${100 / 3}%`, // Adjust based on numColumns to fit the grid
+    aspectRatio: 1, // Optional: makes each item square, adjust as needed
+    padding: 4, // Adjust padding to control spacing between items
+  },
+
+  horizontalList: {
+    flexGrow: 0, // Prevents the FlatList from trying to fill the vertical space
+  },
+
   categoryIcon: {
     marginRight: 10,
     width: 30,
@@ -318,6 +404,43 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 18,
     fontWeight: "bold",
+  },
+
+  subjectText: {
+    position: "absolute",
+    top: 15,
+    left: 15,
+    fontSize: 28,
+  },
+
+  subtopicText: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    fontSize: 14,
+    backgroundColor: "white",
+    width: "100%",
+
+    borderRadius: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    overflow: "hidden", // Add this line
+  },
+  subjectImage: {
+    position: "absolute",
+    bottom: 15,
+    right: 60, // Adjust this value as needed
+    width: 100, // Set your desired width
+    height: 100, // Set your desired height
+  },
+
+  subtopicImage: {
+    position: "absolute",
+    bottom: 15,
+    right: 60, // Adjust this value as needed
+    width: 100, // Set your desired width
+    height: 100, // Set your desired height
   },
   subCategoryBox: {
     flexDirection: "row",
