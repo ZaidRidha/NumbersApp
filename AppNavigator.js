@@ -9,6 +9,7 @@ import CustomHeader from "./components/CustomHeader.js";
 import NumbersHome from "./screens/NumbersHome.js";
 import ApCurriculum from "./screens/ApCurriculum.js";
 import MaximiseSheet from "./screens/MaximiseSheet.js";
+import ScanHome from "./screens/ScanHome.js";
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,15 @@ function AppNavigator() {
             cardStyle: { backgroundColor: "white" },
           })}
         />
+        <Stack.Screen
+          name="ScanHome"
+          component={ScanHome}
+          options={({ navigation }) => ({
+            // Use a function to get access to navigation
+            header: () => <CustomHeader navigation={navigation} />, // Pass navigation prop to CustomHeader
+            cardStyle: { backgroundColor: "white" },
+          })}
+        />
 
         <Stack.Screen
           name="NumbersHome"
@@ -53,21 +63,21 @@ function AppNavigator() {
           })}
         />
 
-<Stack.Screen
-  name="MaximiseSheet"
-  component={MaximiseSheet}
-  options={{
-    headerBackTitle: " ", // This hides the back button text but keeps the arrow
-    title: "",
-    headerStyle: {
-      backgroundColor: '#000', // Set the header background color to black
-      shadowOpacity: 0, // Removes shadow on iOS
-      elevation: 0, // Removes shadow on Android
-      borderBottomWidth: 0, // Removes bottom border line on iOS
-    },
-    headerTintColor: '#fff', // Optional: Change the header text and icons to white for contrast
-  }}
-/>
+        <Stack.Screen
+          name="MaximiseSheet"
+          component={MaximiseSheet}
+          options={{
+            headerBackTitle: " ", // This hides the back button text but keeps the arrow
+            title: "",
+            headerStyle: {
+              backgroundColor: "#000", // Set the header background color to black
+              shadowOpacity: 0, // Removes shadow on iOS
+              elevation: 0, // Removes shadow on Android
+              borderBottomWidth: 0, // Removes bottom border line on iOS
+            },
+            headerTintColor: "#fff", // Optional: Change the header text and icons to white for contrast
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

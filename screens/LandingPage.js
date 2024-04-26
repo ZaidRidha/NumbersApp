@@ -71,7 +71,7 @@ const LandingPage = ({ navigation }) => {
       {/* AI Button */}
       <ButtonComponent
         title="SCAN WITH NUMBERS AI TOOL"
-        navigateTo="Scan"
+        navigateTo="ScanHome"
         imageSource={require("../assets/Images/path-to-scan-3.png")}
         navigation={navigation}
         buttonStyle={styles.aiButton}
