@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { OPENAI_API_KEY } from "@env";
 import OpenAI from "openai";
@@ -7,9 +7,8 @@ import OpenAI from "openai";
 const ScanHome = () => {
   const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
-
-  const [input, setInput] = useState("");
   const [response, setResponse] = useState("");
+  const [storedPhoto, setStoredPhoto] = useState(null);
   const cameraRef = useRef(null);
 
   const openai = new OpenAI({
@@ -17,16 +16,23 @@ const ScanHome = () => {
   });
 
   const takePicture = async () => {
-    if (cameraRef.current) {
+    if (storedPhoto) {
+      setStoredPhoto(null);
+    } else if (cameraRef.current) {
       const options = { base64: true };
       const photo = await cameraRef.current.takePictureAsync(options);
-      let photoBase64 = photo.base64;
-
-      let imageDataUrl = `data:image/jpeg;base64,${photoBase64}`;
-
-      callOpenAIAPI(imageDataUrl);
+      setStoredPhoto(photo.base64);
     }
   };
+  const scanPicture = async () => {
+    if (storedPhoto) {
+      let imageDataUrl = `data:image/jpeg;base64,${storedPhoto}`;
+      await callOpenAIAPI(imageDataUrl);
+    } else {
+      setResponse("No photo to scan. Please take a photo first.");
+    }
+  };
+
   const callOpenAIAPI = async (imageDataUrl) => {
     try {
       const completion = await openai.chat.completions.create({
@@ -38,7 +44,7 @@ const ScanHome = () => {
               {
                 type: "image_url",
                 image_url: {
-                  "url": imageDataUrl,
+                  url: imageDataUrl,
                 },
               },
             ],
@@ -54,24 +60,24 @@ const ScanHome = () => {
       setResponse(`Error: ${error.message}`);
     }
   };
+
   if (!permission) {
-    // Camera permissions are still loading.
     return (
       <View style={styles.container}>
         <Text>Loading permissions...</Text>
       </View>
-    ); // Added a return statement to handle this case
+    );
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
-    console.log("not yet granted");
     return (
       <View style={styles.container}>
         <Text style={{ textAlign: "center" }}>
           We need your permission to show the camera
         </Text>
-        <Button onPress={requestPermission} title="Grant Permission" />
+        <TouchableOpacity onPress={requestPermission} style={styles.grantPermissionButton}>
+          <Text style={styles.grantPermissionText}>Grant Permission</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -86,14 +92,30 @@ const ScanHome = () => {
       <Text style={styles.subText}>
         ***Scan question and select method, NUM8ERS will solve your question***
       </Text>
-      <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
+      {storedPhoto ? (
+        <Image
+          source={{ uri: `data:image/jpeg;base64,${storedPhoto}` }}
+          style={styles.camera}
+        />
+      ) : (
+        <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
             <Text style={styles.text}>Flip Camera</Text>
           </TouchableOpacity>
         </View>
       </CameraView>
-      <Button title="Send" onPress={takePicture} />
+      )}
+
+
+      <View style={styles.actionButtonsContainer}>
+        <TouchableOpacity style={styles.actionButton} onPress={takePicture}>
+          <Text style={styles.actionButtonText}>Retake</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.actionButton} onPress={scanPicture}>
+          <Text style={styles.actionButtonText}>Scan</Text>
+        </TouchableOpacity>
+      </View>
       <Text>{response}</Text>
     </View>
   );
@@ -122,7 +144,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 50,
   },
-
   camera: {
     width: 400,
     height: 400,
@@ -142,5 +163,36 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "white",
+  },
+  preview: {
+    width: 300,
+    height: 300,
+    marginTop: 20,
+  },
+  actionButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: '80%',
+    marginTop: 20,
+  },
+  actionButton: {
+    flex: 1,
+    backgroundColor: '#538A0E',
+    padding: 12,
+    marginHorizontal: 10,
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  actionButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  grantPermissionButton: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 5,
+  },
+  grantPermissionText: {
+    color: 'white',
   },
 });
