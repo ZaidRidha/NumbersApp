@@ -4,7 +4,7 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { OPENAI_API_KEY } from "@env";
 import OpenAI from "openai";
 
-const ScanHome = () => {
+const ScanHome = ({ navigation }) => {
   const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [response, setResponse] = useState("");
@@ -75,7 +75,10 @@ const ScanHome = () => {
         <Text style={{ textAlign: "center" }}>
           We need your permission to show the camera
         </Text>
-        <TouchableOpacity onPress={requestPermission} style={styles.grantPermissionButton}>
+        <TouchableOpacity
+          onPress={requestPermission}
+          style={styles.grantPermissionButton}
+        >
           <Text style={styles.grantPermissionText}>Grant Permission</Text>
         </TouchableOpacity>
       </View>
@@ -86,6 +89,9 @@ const ScanHome = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
 
+  const scanNavigate = () => {
+    navigation.navigate("ScanMethod", { photo: storedPhoto });
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>WELCOME TO NUM8ERS AI SYSTEM</Text>
@@ -99,20 +105,22 @@ const ScanHome = () => {
         />
       ) : (
         <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip Camera</Text>
-          </TouchableOpacity>
-        </View>
-      </CameraView>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={toggleCameraFacing}
+            >
+              <Text style={styles.text}>Flip Camera</Text>
+            </TouchableOpacity>
+          </View>
+        </CameraView>
       )}
-
 
       <View style={styles.actionButtonsContainer}>
         <TouchableOpacity style={styles.actionButton} onPress={takePicture}>
           <Text style={styles.actionButtonText}>Retake</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton} onPress={scanPicture}>
+        <TouchableOpacity style={styles.actionButton} onPress={scanNavigate}>
           <Text style={styles.actionButtonText}>Scan</Text>
         </TouchableOpacity>
       </View>
@@ -172,27 +180,27 @@ const styles = StyleSheet.create({
   actionButtonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: '80%',
+    width: "80%",
     marginTop: 20,
   },
   actionButton: {
     flex: 1,
-    backgroundColor: '#538A0E',
+    backgroundColor: "#538A0E",
     padding: 12,
     marginHorizontal: 10,
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 10,
   },
   actionButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
   },
   grantPermissionButton: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     padding: 10,
     borderRadius: 5,
   },
   grantPermissionText: {
-    color: 'white',
+    color: "white",
   },
 });
