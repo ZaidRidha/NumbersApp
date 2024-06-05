@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity,Image } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import Checkbox from 'expo-checkbox';
 import { OPENAI_API_KEY } from "@env";
 import OpenAI from "openai";
@@ -10,22 +10,13 @@ const ScanMethod = ({ route, navigation }) => {
     apiKey: OPENAI_API_KEY,
   });
 
-  const { photo, methodResponse } = route.params; // Get the photo from route parameters
+  const { photo, methodResponse } = route.params; // Get the photo and response from route parameters
 
   const [response, setResponse] = useState(""); // State to store the API response
-  const [selectedMethod, setSelectedMethod] = useState("Factoring"); // Set "Factoring" as the default selected method
-  console.log(methodResponse);
+  const [selectedMethod, setSelectedMethod] = useState(""); // State to store the selected method
 
-
-  const methods = [
-    "Factoring",
-    "Quadratic Formula",
-    "Completing the square",
-    "Graphical Method",
-    "Using computer algebra system (CAS)"
-  ];
-
-  
+  // Parse the methodResponse into an array of methods
+  const methods = methodResponse.split('\n').filter(method => method.trim() !== "");
 
   const toggleMethod = (method) => {
     setSelectedMethod(method); // Always set the selected method, disallow unselecting
@@ -145,5 +136,11 @@ const styles = StyleSheet.create({
     height: 300,
     resizeMode: 'contain',
     marginBottom: 20,
+  },
+  response: {
+    marginTop: 20,
+    color: "white",
+    fontSize: 16,
+    textAlign: "center",
   },
 });

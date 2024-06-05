@@ -41,7 +41,7 @@ const ScanHome = ({ navigation }) => {
           {
             role: "user",
             content: [
-              { type: "text", text: "What methods can I use to solve this problem?, Simply give me the methods I can use to solve the problem, each method on a new line, nothing else. Don't write anything other than the methods. Each method on a new line. " },
+              { type: "text", text: "What methods can I use to solve this problem?, Simply give me the methods I can use to solve the problem, each method on a new line, nothing else. Don't write anything other than the methods. Each method on a new line. Maximum 5 methods. " },
               {
                 type: "image_url",
                 image_url: {
