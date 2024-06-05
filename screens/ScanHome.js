@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { OPENAI_API_KEY } from "@env";
 import OpenAI from "openai";
@@ -24,12 +24,13 @@ const ScanHome = ({ navigation }) => {
       setStoredPhoto(photo.base64);
     }
   };
+
   const scanPicture = async () => {
     if (storedPhoto) {
       let imageDataUrl = `data:image/jpeg;base64,${storedPhoto}`;
       await callOpenAIAPI(imageDataUrl);
     } else {
-      setResponse("No photo to scan. Please take a photo first.");
+      Alert.alert("No photo to scan", "Please take a photo first.");
     }
   };
 
@@ -40,7 +41,7 @@ const ScanHome = ({ navigation }) => {
           {
             role: "user",
             content: [
-              { type: "text", text: "What’s in this image?" },
+              { type: "text", text: "What methods can I use to solve this problem?, Simply give me the methods I can use to solve the problem, each method on a new line, nothing else. Don't write anything other than the methods. Each method on a new line. " },
               {
                 type: "image_url",
                 image_url: {
@@ -55,6 +56,7 @@ const ScanHome = ({ navigation }) => {
       });
 
       setResponse(completion.choices[0].message.content);
+      navigation.navigate("ScanMethod", { photo: storedPhoto, methodResponse: completion.choices[0].message.content });
     } catch (error) {
       console.error("Error calling OpenAI API", error);
       setResponse(`Error: ${error.message}`);
@@ -89,9 +91,7 @@ const ScanHome = ({ navigation }) => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
 
-  const scanNavigate = () => {
-    navigation.navigate("ScanMethod", { photo: storedPhoto });
-  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>WELCOME TO NUM8ERS AI SYSTEM</Text>
@@ -120,11 +120,10 @@ const ScanHome = ({ navigation }) => {
         <TouchableOpacity style={styles.actionButton} onPress={takePicture}>
           <Text style={styles.actionButtonText}>Retake</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton} onPress={scanNavigate}>
+        <TouchableOpacity style={styles.actionButton} onPress={scanPicture}>
           <Text style={styles.actionButtonText}>Scan</Text>
         </TouchableOpacity>
       </View>
-      <Text>{response}</Text>
     </View>
   );
 };

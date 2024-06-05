@@ -10,10 +10,12 @@ const ScanMethod = ({ route, navigation }) => {
     apiKey: OPENAI_API_KEY,
   });
 
-  const { photo } = route.params; // Get the photo from route parameters
+  const { photo, methodResponse } = route.params; // Get the photo from route parameters
 
   const [response, setResponse] = useState(""); // State to store the API response
   const [selectedMethod, setSelectedMethod] = useState("Factoring"); // Set "Factoring" as the default selected method
+  console.log(methodResponse);
+
 
   const methods = [
     "Factoring",
