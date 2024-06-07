@@ -11,6 +11,7 @@ import ApCurriculum from "./screens/ApCurriculum.js";
 import MaximiseSheet from "./screens/MaximiseSheet.js";
 import ScanHome from "./screens/ScanHome.js";
 import ScanMethod from "./screens/ScanMethod.js";
+import ScanSolution from "./screens/ScanSolution.js";
 
 const Stack = createStackNavigator();
 
@@ -49,6 +50,16 @@ function AppNavigator() {
         <Stack.Screen
           name="ScanMethod"
           component={ScanMethod}
+          options={({ navigation }) => ({
+            // Use a function to get access to navigation
+            header: () => <CustomHeader navigation={navigation} />, // Pass navigation prop to CustomHeader
+            cardStyle: { backgroundColor: "white" },
+          })}
+        />
+
+        <Stack.Screen
+          name="ScanSolution"
+          component={ScanSolution}
           options={({ navigation }) => ({
             // Use a function to get access to navigation
             header: () => <CustomHeader navigation={navigation} />, // Pass navigation prop to CustomHeader

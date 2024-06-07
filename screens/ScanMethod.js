@@ -5,7 +5,6 @@ import { OPENAI_API_KEY } from "@env";
 import OpenAI from "openai";
 
 const ScanMethod = ({ route, navigation }) => {
-
   const openai = new OpenAI({
     apiKey: OPENAI_API_KEY,
   });
@@ -53,6 +52,7 @@ const ScanMethod = ({ route, navigation }) => {
       });
   
       setResponse(completion.choices[0].message.content);
+      navigation.navigate("ScanSolution", { solution: completion.choices[0].message.content });
     } catch (error) {
       console.error("Error calling OpenAI API", error);
       setResponse(`Error: ${error.message}`);
@@ -82,7 +82,7 @@ const ScanMethod = ({ route, navigation }) => {
         <Text style={styles.actionButtonText}>Solution</Text>
       </TouchableOpacity>
 
-      {response && <Text style={styles.response}>{response}</Text>}
+  
     </View>
   );
 };
@@ -129,13 +129,6 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: 'white',  // Setting the text color to white
     fontSize: 20,
-  },
-
-  image: {
-    width: 300,
-    height: 300,
-    resizeMode: 'contain',
-    marginBottom: 20,
   },
   response: {
     marginTop: 20,
