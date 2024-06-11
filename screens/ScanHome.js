@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from "react-na
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { OPENAI_API_KEY } from "@env";
 import OpenAI from "openai";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const ScanHome = ({ navigation }) => {
   const [facing, setFacing] = useState("back");
@@ -98,6 +99,7 @@ const ScanHome = ({ navigation }) => {
       <Text style={styles.subText}>
         ***Scan question and select method, NUM8ERS will solve your question***
       </Text>
+      
       {storedPhoto ? (
         <Image
           source={{ uri: `data:image/jpeg;base64,${storedPhoto}` }}
@@ -105,14 +107,12 @@ const ScanHome = ({ navigation }) => {
         />
       ) : (
         <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
-          <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={styles.button}
+              style={styles.flipButton}
               onPress={toggleCameraFacing}
             >
-              <Text style={styles.text}>Flip Camera</Text>
+              <Ionicons name="camera-reverse-outline" size={32} color="white" />
             </TouchableOpacity>
-          </View>
         </CameraView>
       )}
 
@@ -155,16 +155,12 @@ const styles = StyleSheet.create({
     width: 400,
     height: 400,
   },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    margin: 64,
-  },
-  button: {
-    flex: 1,
-    alignSelf: "flex-end",
-    alignItems: "center",
+
+  flipButton: {
+    position: "absolute",
+    top: 25,
+    right: 25,
+    zIndex: 1,
   },
   text: {
     fontSize: 24,
