@@ -101,10 +101,18 @@ const ScanHome = ({ navigation }) => {
       </Text>
       
       {storedPhoto ? (
+        <View>
         <Image
           source={{ uri: `data:image/jpeg;base64,${storedPhoto}` }}
           style={styles.camera}
         />
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => setStoredPhoto(null)}
+        >
+          <Ionicons name="close-circle-outline" size={32} color="white" />
+        </TouchableOpacity>
+      </View>
       ) : (
         <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
             <TouchableOpacity
@@ -197,5 +205,12 @@ const styles = StyleSheet.create({
   },
   grantPermissionText: {
     color: "white",
+  },
+
+  closeButton: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    zIndex: 1,
   },
 });
