@@ -6,7 +6,6 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  PixelRatio,
 } from "react-native";
 
 const { width, height } = Dimensions.get("window");
@@ -22,7 +21,7 @@ const isTablet = () => {
 
 const scaleFontSize = (fontSize) => {
   // Increase font size for tablets
-  const ratio = isTablet() ? 1.75 : 1; // Increase font size by 50% on tablets
+  const ratio = isTablet() ? 1.75 : 1; // Increase font size by 75% on tablets
   return fontSize * ratio;
 };
 
@@ -78,7 +77,7 @@ const LandingPage = ({ navigation }) => {
       />
       {/* Formula Button */}
       <ButtonComponent
-        title="FORMULAS SHEET"
+        title="FORMULA SHEETS"
         navigateTo="FormulaHome"
         imageSource={require("../assets/Images/path-to-formula-4.png")}
         navigation={navigation}
@@ -104,6 +103,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     height: imageHeight + imageMarginTop + containerPadding * 2,
     position: "relative",
+    borderWidth: 1, // Add borderWidth
+    borderColor: "black", // Add borderColor
   },
   image: {
     width: "100%",
@@ -126,15 +127,15 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   learningButton: {
-    button: { backgroundColor: "#D4E09B" },
+    button: { backgroundColor: "#dcedfc" },
     text: { color: "#000" },
   },
   aiButton: {
-    button: { backgroundColor: "#313131" },
-    text: { color: "#FFF" },
+    button: { backgroundColor: "#faedf0" },
+    text: { color: "#000" },
   },
   formulaButton: {
-    button: { backgroundColor: "#D4E09B" },
+    button: { backgroundColor: "#e1fae1" },
     text: { color: "#000" },
     image: {
       width: "120%",

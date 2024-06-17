@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, ActivityIndicator } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { OPENAI_API_KEY } from "@env";
 import OpenAI from "openai";
@@ -11,6 +11,7 @@ const ScanHome = ({ navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [response, setResponse] = useState("");
   const [storedPhoto, setStoredPhoto] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state
   const cameraRef = useRef(null);
 
   const openai = new OpenAI({
@@ -32,8 +33,10 @@ const ScanHome = ({ navigation }) => {
 
   const scanPicture = async () => {
     if (storedPhoto) {
+      setLoading(true); // Start loading
       let imageDataUrl = `data:image/jpeg;base64,${storedPhoto}`;
       await callOpenAIAPI(imageDataUrl);
+      setLoading(false); // Stop loading
     } else {
       Alert.alert("No photo to scan", "Please take a photo first.");
     }
@@ -131,8 +134,12 @@ const ScanHome = ({ navigation }) => {
         <TouchableOpacity style={styles.actionButton} onPress={debouncedTakePicture}>
           <Text style={styles.actionButtonText}>Retake</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton} onPress={scanPicture}>
-          <Text style={styles.actionButtonText}>Scan</Text>
+        <TouchableOpacity style={styles.actionButton} onPress={scanPicture} disabled={loading}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+            <Text style={styles.actionButtonText}>Scan</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>
