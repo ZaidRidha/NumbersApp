@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import Checkbox from 'expo-checkbox';
 import { OPENAI_API_KEY } from "@env";
 import OpenAI from "openai";
@@ -13,6 +13,7 @@ const ScanMethod = ({ route, navigation }) => {
 
   const [response, setResponse] = useState(""); // State to store the API response
   const [selectedMethod, setSelectedMethod] = useState(""); // State to store the selected method
+  const [loading, setLoading] = useState(false); // Loading state
 
   // Parse the methodResponse into an array of methods
   const methods = methodResponse.split('\n').filter(method => method.trim() !== "");
@@ -23,8 +24,10 @@ const ScanMethod = ({ route, navigation }) => {
 
   const scanPicture = async () => {
     if (photo) {
+      setLoading(true); // Start loading
       let imageDataUrl = `data:image/jpeg;base64,${photo}`;
       await callOpenAIAPI(imageDataUrl);
+      setLoading(false); // Stop loading
     } else {
       setResponse("No photo to scan. Please take a photo first.");
     }
@@ -78,11 +81,13 @@ const ScanMethod = ({ route, navigation }) => {
         </TouchableOpacity>
       ))}
 
-      <TouchableOpacity style={styles.solutionButton} onPress={scanPicture}>
-        <Text style={styles.actionButtonText}>Solution</Text>
+      <TouchableOpacity style={styles.solutionButton} onPress={scanPicture} disabled={loading}>
+        {loading ? (
+          <ActivityIndicator size="small" color="#FFFFFF" />
+        ) : (
+          <Text style={styles.actionButtonText}>Solution</Text>
+        )}
       </TouchableOpacity>
-
-  
     </View>
   );
 };
