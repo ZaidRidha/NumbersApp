@@ -4,6 +4,7 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { OPENAI_API_KEY } from "@env";
 import OpenAI from "openai";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import debounce from 'lodash.debounce'; // Import lodash debounce
 
 const ScanHome = ({ navigation }) => {
   const [facing, setFacing] = useState("back");
@@ -26,6 +27,9 @@ const ScanHome = ({ navigation }) => {
     }
   };
 
+  // Debounce the takePicture function
+  const debouncedTakePicture = debounce(takePicture, 1000);
+
   const scanPicture = async () => {
     if (storedPhoto) {
       let imageDataUrl = `data:image/jpeg;base64,${storedPhoto}`;
@@ -42,7 +46,7 @@ const ScanHome = ({ navigation }) => {
           {
             role: "user",
             content: [
-              { type: "text", text: "What methods can I use to solve this problem?, Simply give me the methods I can use to solve the problem, each method on a new line, nothing else. Don't write anything other than the methods. Each method on a new line. Maximum 5 methods. " },
+              { type: "text", text: "What methods can I use to solve this problem?, Simply give me the methods I can use to solve the problem, each method on a new line, nothing else. Don't write anything other than the methods. Each method on a new line. Maximum 5 methods." },
               {
                 type: "image_url",
                 image_url: {
@@ -92,7 +96,6 @@ const ScanHome = ({ navigation }) => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
 
-
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>WELCOME TO NUM8ERS AI SYSTEM</Text>
@@ -125,7 +128,7 @@ const ScanHome = ({ navigation }) => {
       )}
 
       <View style={styles.actionButtonsContainer}>
-        <TouchableOpacity style={styles.actionButton} onPress={takePicture}>
+        <TouchableOpacity style={styles.actionButton} onPress={debouncedTakePicture}>
           <Text style={styles.actionButtonText}>Retake</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={scanPicture}>
