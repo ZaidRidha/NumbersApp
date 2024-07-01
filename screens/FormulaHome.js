@@ -1,4 +1,3 @@
-// FormulaHome.js
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
@@ -10,11 +9,11 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import { Icon, SearchBar } from "react-native-elements"; // Import SearchBar her
+import { Icon, SearchBar } from "react-native-elements"; // Import SearchBar here
 import { useNavigation } from "@react-navigation/native";
+
 const FormulaHome = () => {
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
-
   const [displayedContent, setDisplayedContent] = useState([]);
   const searchBarRef = useRef(null);
   const [currentLevel, setCurrentLevel] = useState("subjects"); // 'subjects', 'subtopics', 'details'
@@ -28,13 +27,11 @@ const FormulaHome = () => {
   const extractImageUrl = (htmlString) => {
     const regex = /<img.*?src="([^"]*)"/;
     const match = regex.exec(htmlString);
-
     return match ? match[1] : null;
   };
 
   const updateSearch = (query) => {
     setSearchQuery(query);
-
     if (query) {
       const results = performSearch(query);
       setSearchResults(results);
@@ -108,7 +105,6 @@ const FormulaHome = () => {
         throw new Error("Network response was not ok");
       }
       const formulaSheets = await response.json();
-
       return formulaSheets; // Return the fetched formula sheets
     } catch (error) {
       console.error("There was an error fetching the formula sheets:", error);
@@ -119,20 +115,16 @@ const FormulaHome = () => {
   const handlePressOnSubjectOrSubtopic = async (identifier, level) => {
     setNavigationHistory([
       ...navigationHistory,
-      { level: currentLevel, content: displayedContent },
+      { level: currentLevel, content: displayedContent, subjectName: selectedSubjectName },
     ]);
-
     if (level === "subjects") {
       // When a subject is selected, fetch its subtopics
       const subtopics = await fetchSubtopics(identifier);
       setDisplayedContent(subtopics || []);
       setCurrentLevel("subtopics"); // Now displaying subtopics, so update the level
-      console.log(identifier);
       setSelectedSubjectName(identifier); // Update the title with the selected subject name
-      console.log(selectedSubjectName);
     } else if (level === "subtopics") {
       // When a subtopic is selected, fetch its details
-      console.log(identifier);
       setSelectedSubjectName(identifier); // Update the title with the selected subject name
       const details = await fetchSubtopicDetails(identifier); // Assuming identifier is a slug for subtopics
       setDisplayedContent(details || []);
@@ -162,10 +154,17 @@ const FormulaHome = () => {
     const history = [...navigationHistory];
     const previousState = history.pop();
     setNavigationHistory(history);
-
+  
     if (previousState) {
       setCurrentLevel(previousState.level);
       setDisplayedContent(previousState.content);
+      setSelectedSubjectName(previousState.subjectName || "Formulas"); // Update the subject name
+    } else {
+      setCurrentLevel("subjects");
+      fetchSubjects().then((fetchedSubjects) => {
+        setDisplayedContent(fetchedSubjects);
+      });
+      setSelectedSubjectName("Formulas");
     }
   };
 
@@ -189,7 +188,6 @@ const FormulaHome = () => {
           }
         />
       </View>
-
       <SearchBar
         placeholder="Search Here..."
         onChangeText={updateSearch}
@@ -201,7 +199,6 @@ const FormulaHome = () => {
         inputStyle={styles.searchBarInput}
         ref={searchBarRef} // Attach the ref to the SearchBar
       />
-
       <View style={styles.flatlistContainer}>
         {["subjects", "subtopics", "details"].includes(currentLevel) && (
           <Text style={styles.sectionHeader}>
@@ -211,10 +208,10 @@ const FormulaHome = () => {
         <FlatList
           data={displayedContent}
           keyExtractor={(item) => item.id.toString()}
-          numColumns={currentLevel === "details" ? 3 : 1} // 3 columns for 'details' level, 1 column otherwise
-          key={currentLevel === "details" ? "threeColumns" : "oneColumn"} // Change the key to force re-render
+          numColumns={1} // Ensure single column for all levels
+          key={"oneColumn"} // Change the key to force re-render
           horizontal={false} // Ensure vertical scrolling
-          style={currentLevel === "details" ? styles.gridList : {}}
+          style={currentLevel === "details" ? styles.detailsList : {}}
           renderItem={({ item }) => {
             // Check if the current level is 'formulas' to decide on rendering logic
             if (currentLevel === "formulas") {
@@ -250,7 +247,6 @@ const FormulaHome = () => {
               }
             } else {
               // This handles subjects and subtopics as before
-
               return (
                 <TouchableOpacity
                   style={
@@ -276,7 +272,6 @@ const FormulaHome = () => {
                       />
                     </>
                   )}
-
                   {currentLevel === "subtopics" && (
                     <>
                       <Text style={styles.subtopicText}>{item.name}</Text>
@@ -308,13 +303,11 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "white",
   },
-
   flatlistContainer: {
     padding: 16,
     backgroundColor: "#4F4F4F",
     borderRadius: 10,
   },
-
   formulaImageContainer: {
     alignItems: "center", // Center the image horizontally
     marginVertical: 20, // Add some vertical margin
@@ -371,53 +364,44 @@ const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: "#C8E3DD",
   },
-
   subjectBox: {
     flexDirection: "column", // Stack items vertically
     justifyContent: "flex-start", // Align items to the start vertically
     alignItems: "flex-start", // Align items to the start horizontally
     paddingVertical: 80,
-
     borderRadius: 10,
     marginBottom: 10,
     elevation: 3,
     backgroundColor: "#D1E3C8",
     position: "relative",
   },
-
   detailsBox: {
-    flexDirection: "column",
-
+    flexDirection: "row",
     justifyContent: "center",
-    padding: 12, // Increased padding to give more space for text
-    margin: 8,
+    alignItems: "center", // Center text vertically
+    padding: 15, // Increased padding to give more space for text
+    marginVertical: 8,
     borderRadius: 10,
-    elevation: 1,
     backgroundColor: "#D1E3C8",
-    width: `${100 / 3 - 4}%`,
-    height: 150, // Adjust height if necessary
+    width: "100%", // Full width for stacking vertically
+    height: 60, // Adjust height if necessary
   },
-
   detailsText: {
     fontSize: 16,
     fontWeight: "bold",
-
-    marginVertical: 4,
+    textAlign: "center", // Center text horizontally
   },
-
   sectionHeader: {
     fontSize: 20,
     fontWeight: "bold",
     marginLeft: 10,
     marginTop: 5,
     marginBottom: 25,
-
     color: "white", // Adjust text color according to your theme
   },
   horizontalList: {
     flexGrow: 0, // Prevents the FlatList from trying to fill the vertical space
   },
-
   categoryIcon: {
     marginRight: 10,
     width: 30,
@@ -427,14 +411,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-
   subjectText: {
     position: "absolute",
     top: 15,
     left: 15,
     fontSize: 28,
   },
-
   subtopicText: {
     position: "absolute",
     top: 0,
@@ -442,7 +424,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     backgroundColor: "white",
     width: "100%",
-
     borderRadius: 20,
     padding: 10,
     borderWidth: 1,
@@ -456,7 +437,6 @@ const styles = StyleSheet.create({
     width: 100, // Set your desired width
     height: 100, // Set your desired height
   },
-
   subtopicImage: {
     position: "absolute",
     bottom: 15,
