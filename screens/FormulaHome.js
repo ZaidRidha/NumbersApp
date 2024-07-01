@@ -253,7 +253,7 @@ const FormulaHome = () => {
                     currentLevel === "subjects"
                       ? styles.subjectBox
                       : currentLevel === "subtopics"
-                      ? styles.subjectBox // Assuming you want the same style for subjects and subtopics
+                      ? styles.subTopicBox // Assuming you want the same style for subjects and subtopics
                       : currentLevel === "details"
                       ? styles.detailsBox // Smaller style for details level
                       : styles.categoryBox // Default or fallback style
@@ -307,6 +307,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#4F4F4F",
     borderRadius: 10,
+    flex:1,
   },
   formulaImageContainer: {
     alignItems: "center", // Center the image horizontally
@@ -444,13 +445,18 @@ const styles = StyleSheet.create({
     width: 100, // Set your desired width
     height: 100, // Set your desired height
   },
-  subCategoryBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 15, // Slightly smaller padding
-    borderRadius: 8, // Slightly smaller border radius
-    marginBottom: 8,
-    elevation: 2, // Slightly less elevation
+
+
+  subTopicBox: {
+    flexDirection: "column", // Stack items vertically
+    justifyContent: "flex-start", // Align items to the start vertically
+    alignItems: "flex-start", // Align items to the start horizontally
+    paddingVertical: 80,
+    borderRadius: 10,
+    marginBottom: 10,
+    elevation: 3,
+    backgroundColor: "#D1E3C8",
+    position: "relative",
   },
   subCategoryText: {
     fontSize: 16, // Slightly smaller font size
