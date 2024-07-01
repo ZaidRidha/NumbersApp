@@ -88,6 +88,7 @@ const ScanMethod = ({ route, navigation }) => {
           <Text style={styles.actionButtonText}>Solution</Text>
         )}
       </TouchableOpacity>
+
     </View>
   );
 };
@@ -121,6 +122,8 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     color: 'white',
     fontSize: 20,
+    flexWrap: 'wrap',  // Ensures the text wraps within the available space
+    flex: 1,  // Ensures the text takes the remaining space in the row
   },
   solutionButton: {
     backgroundColor: "#538A0E",
@@ -140,5 +143,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     textAlign: "center",
+    flexWrap: 'wrap',  // Ensures the text wraps within the available space
   },
 });

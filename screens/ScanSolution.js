@@ -22,7 +22,7 @@ const ScanSolution = ({ route, navigation }) => {
           style={styles.nextButton}
           onPress={() => navigation.replace("ScanHome")}
         >
-          <Text style={styles.actionButtonText}>Solution</Text>
+          <Text style={styles.actionButtonText}>Next Question</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>

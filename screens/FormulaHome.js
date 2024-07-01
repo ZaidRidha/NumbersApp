@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
   },
 
   detailsBox: {
-    flexDirection: "row",
+    flexDirection: "column",
 
     justifyContent: "center",
     padding: 12, // Increased padding to give more space for text

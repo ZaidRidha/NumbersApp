@@ -132,7 +132,7 @@ const ScanHome = ({ navigation }) => {
 
       <View style={styles.actionButtonsContainer}>
         <TouchableOpacity style={styles.actionButton} onPress={debouncedTakePicture}>
-          <Text style={styles.actionButtonText}>Retake</Text>
+          <Text style={styles.actionButtonText}>Take</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} onPress={scanPicture} disabled={loading}>
           {loading ? (
